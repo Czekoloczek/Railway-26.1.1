@@ -34,4 +34,4 @@ jobs:
           cache-read-only: false
 
       - name: Build
-        run: ./gradlew build
+        run: sh ./gradlew build
