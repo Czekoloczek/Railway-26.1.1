@@ -33,7 +33,5 @@ jobs:
           cache-disabled: false
           cache-read-only: false
 
-      - name: Build & Publish to Maven
-        env:
-          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-        run: ./gradlew build publish
+      - name: Build
+        run: ./gradlew build
