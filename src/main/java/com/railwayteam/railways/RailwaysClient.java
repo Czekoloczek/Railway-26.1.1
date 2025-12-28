@@ -19,8 +19,6 @@
 package com.railwayteam.railways;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.railwayteam.railways.compat.Mods;
-import com.railwayteam.railways.compat.journeymap.RailwayMapPlugin;
 import com.railwayteam.railways.content.buffer.BufferModelUtils;
 import com.railwayteam.railways.content.conductor.ConductorCapModel;
 import com.railwayteam.railways.content.conductor.ConductorEntityModel;
@@ -57,8 +55,6 @@ public class RailwaysClient {
 
     CustomTrackOverlayRendering.register(CREdgePointTypes.COUPLER, CRBlockPartials.COUPLER_BOTH);
     CustomTrackOverlayRendering.register(CREdgePointTypes.SWITCH, CRBlockPartials.SWITCH_RIGHT_TURN);
-
-    Mods.JOURNEYMAP.executeIfInstalled(() -> RailwayMapPlugin::load);
 
     CRDevCaps.register();
     BufferModelUtils.register();
