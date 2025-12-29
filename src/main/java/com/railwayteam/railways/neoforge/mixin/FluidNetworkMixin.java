@@ -22,6 +22,8 @@ import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntit
 import com.simibubi.create.content.contraptions.actors.psi.PortableFluidInterfaceBlockEntity;
 import com.simibubi.create.content.fluids.FluidNetwork;
 import com.simibubi.create.content.fluids.PipeConnection;
+import com.simibubi.create.foundation.ICapabilityProvider;
+
 import net.createmod.catnip.data.Pair;
 import net.createmod.catnip.math.BlockFace;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -37,11 +39,11 @@ import java.util.Set;
 @Mixin(value = FluidNetwork.class, remap = false)
 public class FluidNetworkMixin {
     @Shadow Set<Pair<BlockFace, PipeConnection>> frontier;
-    @Shadow @Nullable IFluidHandler source;
+    @Shadow @Nullable ICapabilityProvider<IFluidHandler> source;
 
     @Inject(method = "keepPortableFluidInterfaceEngaged", at = @At("HEAD"))
     private void keepPortableFluidInterfaceEngaged(CallbackInfo ci) {
-    IFluidHandler handler = source;
+    ICapabilityProvider<IFluidHandler> handler = source;
         if (!(handler instanceof InterfaceFluidHandler || handler instanceof PortableFluidInterfaceBlockEntity.InterfaceFluidHandler))
             return;
         if (frontier.isEmpty())
