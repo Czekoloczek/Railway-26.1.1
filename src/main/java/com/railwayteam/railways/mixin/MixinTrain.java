@@ -156,12 +156,14 @@ public abstract class MixinTrain implements IOccupiedCouplers, IIndexedSchedule,
 
     @Inject(method = "earlyTick", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/trains/entity/Train;addToSignalGroups(Ljava/util/Collection;)V", ordinal = 2))
     private void tickOccupiedCouplers(Level level, CallbackInfo ci) {
+        Train train = (Train) (Object) this;
         for (UUID uuid : railways$occupiedCouplers) {
             TrackCoupler coupler = graph.getPoint(CREdgePointTypes.COUPLER, uuid);
-            if (coupler == null)
+            if (coupler == null) {
                 continue;
+            }
 
-            coupler.keepAlive((Train) (Object) this);
+            coupler.keepAlive(train);
         }
     }
 
@@ -215,7 +217,7 @@ public abstract class MixinTrain implements IOccupiedCouplers, IIndexedSchedule,
     )
     private void backCouplerListener(Double distance, Pair<TrackEdgePoint, Couple<TrackNode>> couple, CallbackInfoReturnable<Boolean> cir) {
         if (couple.getFirst() instanceof TrackCoupler coupler) {
-            railways$occupiedCouplers.remove(coupler.getId());
+            railways$occupiedCouplers.add(coupler.getId());
             cir.setReturnValue(false);
         }
     }

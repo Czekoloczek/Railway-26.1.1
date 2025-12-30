@@ -27,6 +27,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(CarriageContraptionEntity.class)
 public interface AccessorCarriageContraptionEntity {
     @Accessor(value = "carriage", remap = false)
+    Carriage railways$getCarriage();
+
+    @Accessor(value = "carriage", remap = false)
     void railways$setCarriage(Carriage carriage);
 
     @Invoker(value = "bindCarriage", remap = false)

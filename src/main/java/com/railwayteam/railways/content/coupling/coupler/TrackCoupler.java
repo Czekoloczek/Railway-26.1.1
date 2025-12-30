@@ -60,6 +60,10 @@ public class TrackCoupler extends SingleBlockEntityEdgePoint {
         return activated > 0;
     }
 
+    public int getActivation() {
+        return activated;
+    }
+
     public void keepAlive(Train train) {
         if (((IHandcarTrain) train).railways$isHandcar()) return;
         activated = 8;
