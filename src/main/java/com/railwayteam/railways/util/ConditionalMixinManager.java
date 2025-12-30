@@ -39,22 +39,43 @@ import java.util.List;
 public class ConditionalMixinManager {
     public static boolean shouldApply(String className) {
         try {
-            List<AnnotationNode> annotationNodes = MixinService.getService().getBytecodeProvider().getClassNode(className).visibleAnnotations;
-            if (annotationNodes == null) return true;
+            org.objectweb.asm.tree.ClassNode classNode = MixinService.getService().getBytecodeProvider().getClassNode(className);
+            List<AnnotationNode> annotationNodes = classNode.visibleAnnotations;
+            if (annotationNodes == null && (classNode.methods == null || classNode.methods.isEmpty())) return true;
 
             boolean shouldApply = true;
-            for (AnnotationNode node : annotationNodes) {
-                if (node.desc.equals(Type.getDescriptor(ConditionalMixin.class))) {
-                    List<Mods> mods = Annotations.getValue(node, "mods", true, Mods.class);
-                    boolean applyIfPresent = Annotations.getValue(node, "applyIfPresent", Boolean.TRUE);
-                    boolean anyModsLoaded = anyModsLoaded(mods);
-                    shouldApply = anyModsLoaded == applyIfPresent;
-                    CRMixinPlugin.LOGGER.debug("{} is{}being applied because the mod(s) {} are{}loaded", className, shouldApply ? " " : " not ", mods, anyModsLoaded ? " " : " not ");
-                }
-                if (node.desc.equals(Type.getDescriptor(DevEnvMixin.class))) {
-                    shouldApply &= Utils.isDevEnv();
+
+            // Check class-level annotations first
+            if (annotationNodes != null) {
+                for (AnnotationNode node : annotationNodes) {
+                    if (node.desc.equals(Type.getDescriptor(ConditionalMixin.class))) {
+                        List<Mods> mods = Annotations.getValue(node, "mods", true, Mods.class);
+                        boolean applyIfPresent = Annotations.getValue(node, "applyIfPresent", Boolean.TRUE);
+                        boolean anyModsLoaded = anyModsLoaded(mods);
+                        shouldApply = anyModsLoaded == applyIfPresent;
+                        CRMixinPlugin.LOGGER.debug("{} is{}being applied because the mod(s) {} are{}loaded", className, shouldApply ? " " : " not ", mods, anyModsLoaded ? " " : " not ");
+                    }
+                    if (node.desc.equals(Type.getDescriptor(DevEnvMixin.class))) {
+                        shouldApply &= Utils.isDevEnv();
+                        CRMixinPlugin.LOGGER.debug("{} is{}being applied because it's marked with @DevEnvMixin and isDevEnv={}", className, shouldApply ? " " : " not ", Utils.isDevEnv());
+                    }
                 }
             }
+
+            // Also check method-level annotations (e.g., method-targeted @DevEnvMixin)
+            if (classNode.methods != null) {
+                for (org.objectweb.asm.tree.MethodNode method : classNode.methods) {
+                    List<AnnotationNode> methodAnns = method.visibleAnnotations;
+                    if (methodAnns == null) continue;
+                    for (AnnotationNode node : methodAnns) {
+                        if (node.desc.equals(Type.getDescriptor(DevEnvMixin.class))) {
+                            shouldApply &= Utils.isDevEnv();
+                            CRMixinPlugin.LOGGER.debug("{}#{} is{}being applied because the method is marked with @DevEnvMixin and isDevEnv={}", className, method.name, shouldApply ? " " : " not ", Utils.isDevEnv());
+                        }
+                    }
+                }
+            }
+
             return shouldApply;
         } catch (ClassNotFoundException | IOException e) {
             throw new RuntimeException(e);
