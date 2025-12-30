@@ -391,6 +391,10 @@ public class TrackCouplerBlockEntity extends SmartBlockEntity implements Transfo
 
         TrackTargetingBehaviour<TrackCoupler> edgePoint1 = reversed ? secondEdgePoint : edgePoint;
         TrackTargetingBehaviour<TrackCoupler> edgePoint2 = reversed ? edgePoint : secondEdgePoint;
+        if (level != null && !level.isClientSide()) {
+            refreshCouplerActivation(coupler1, edgePoint1);
+            refreshCouplerActivation(coupler2, edgePoint2);
+        }
         if (coupler1 != null && coupler2 != null && coupler1.isActivated() && coupler2.isActivated()) {
             Train primaryTrain = Create.RAILWAYS.trains.get(coupler1.getCurrentTrain());
             Train secondaryTrain = Create.RAILWAYS.trains.get(coupler2.getCurrentTrain());
@@ -443,6 +447,23 @@ public class TrackCouplerBlockEntity extends SmartBlockEntity implements Transfo
             setError(Component.translatable("railways.tooltip.coupler.error.missing_train"));
         }
         return OperationInfo.NONE;
+    }
+
+    private void refreshCouplerActivation(@Nullable TrackCoupler coupler, TrackTargetingBehaviour<TrackCoupler> edgePoint) {
+        if (coupler == null || edgePoint == null || level == null || level.isClientSide() || coupler.isActivated())
+            return;
+        TrackGraphLocation location = edgePoint.determineGraphLocation();
+        if (location == null || location.graph == null)
+            return;
+        for (Train train : Create.RAILWAYS.trains.values()) {
+            if (train.graph != location.graph)
+                continue;
+            if (getCarriageOnPoint(train, coupler, edgePoint, true) != null || getCarriageOnPoint(train, coupler, edgePoint, false) != null) {
+                ((IOccupiedCouplers) train).railways$getOccupiedCouplers().add(coupler.getId());
+                coupler.keepAlive(train);
+                break;
+            }
+        }
     }
 
     public OperationMode getOperationMode() {

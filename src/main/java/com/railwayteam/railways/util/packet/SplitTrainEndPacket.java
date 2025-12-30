@@ -34,17 +34,20 @@ public class SplitTrainEndPacket implements S2CPacket {
     final UUID newTrainId;
     final UUID originalTrainOwner;
     final double speed;
+    final boolean doubleEnded;
 
-    public SplitTrainEndPacket(UUID newTrainId, UUID originalTrainOwner, double speed) {
+    public SplitTrainEndPacket(UUID newTrainId, UUID originalTrainOwner, double speed, boolean doubleEnded) {
         this.newTrainId = newTrainId;
         this.originalTrainOwner = originalTrainOwner;
         this.speed = speed;
+        this.doubleEnded = doubleEnded;
     }
 
     public SplitTrainEndPacket(FriendlyByteBuf buf) {
         this.newTrainId = buf.readUUID();
         this.originalTrainOwner = buf.readUUID();
         this.speed = buf.readDouble();
+        this.doubleEnded = buf.readBoolean();
     }
 
     @Override
@@ -52,6 +55,7 @@ public class SplitTrainEndPacket implements S2CPacket {
         buffer.writeUUID(this.newTrainId);
         buffer.writeUUID(this.originalTrainOwner);
         buffer.writeDouble(this.speed);
+        buffer.writeBoolean(this.doubleEnded);
     }
 
     @Override
@@ -62,14 +66,16 @@ public class SplitTrainEndPacket implements S2CPacket {
             Train train = CreateClient.RAILWAYS.trains.get(newTrainId);
             if (train == null) {
                 try {
-                    train = new Train(newTrainId, null, null, new ArrayList<>(), new ArrayList<>(), false, 0);
+                    train = new Train(newTrainId, originalTrainOwner, null, new ArrayList<>(), new ArrayList<>(), doubleEnded, 0);
                     CreateClient.RAILWAYS.trains.put(newTrainId, train);
                 } catch (Exception e) {
                     // Failed to create new train
                 }
             }
-            if (train != null)
+            if (train != null) {
+                train.doubleEnded = this.doubleEnded;
                 train.speed = this.speed;
+            }
         }
     }
 }
