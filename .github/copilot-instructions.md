@@ -6,6 +6,7 @@ Key points
 - Project layout: `src/` contains the canonical game logic, registries, and source code at the root level. This is a unified NeoForge-only structure for 1.21.x.
 - Primary goal now: verify runtime behavior in the NeoForge dev environment (runClient / runServer) and iterate on runtime fixes or feature ports for 1.21.x.
 - Datagen: If you need to regenerate resources, run the datagen task. Datagen writes into `src/generated/resources` and `build/` directories as needed.
+- Rendering issues: If there's any issues with rendering or models, check the src\main\java\com\railwayteam\railways\neoforge\RailwaysClientImpl.java for rendering registrations.
 
 Build & run checklist (what to do now)
 1. Confirm the build is up to date (already done). If you need to re-run the build locally, use the Gradle wrapper from the repo root.
