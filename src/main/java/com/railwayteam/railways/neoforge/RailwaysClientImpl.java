@@ -26,6 +26,7 @@ import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntit
 import com.railwayteam.railways.content.fuel.tank.FuelTankRenderer;
 import com.railwayteam.railways.content.semaphore.SemaphoreRenderer;
 import com.railwayteam.railways.content.switches.TrackSwitchRenderer;
+import com.railwayteam.railways.content.coupling.coupler.TrackCouplerRenderer;
 import com.railwayteam.railways.neoforge.client.track.FullShapeDestroyEffects;
 import com.railwayteam.railways.registry.CRBlockEntities;
 import com.railwayteam.railways.registry.CRParticleTypes;
@@ -109,6 +110,7 @@ public class RailwaysClientImpl {
 		event.registerBlockEntityRenderer(CRBlockEntities.ANDESITE_SWITCH.get(), TrackSwitchRenderer::new);
 		event.registerBlockEntityRenderer(CRBlockEntities.BRASS_SWITCH.get(), TrackSwitchRenderer::new);
 		event.registerBlockEntityRenderer(CRBlockEntitiesImpl.FUEL_TANK.get(), FuelTankRenderer::new);
+		event.registerBlockEntityRenderer(CRBlockEntities.TRACK_COUPLER.get(), TrackCouplerRenderer::new);
 
 		// Ensure Railways bogey block entities always have a vanilla renderer bound.
 		event.registerBlockEntityRenderer(CRBlockEntities.BOGEY.get(), BogeyBlockEntityRenderer::new);

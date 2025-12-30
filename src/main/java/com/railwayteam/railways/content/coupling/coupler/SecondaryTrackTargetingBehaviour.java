@@ -47,7 +47,8 @@ public class SecondaryTrackTargetingBehaviour<T extends TrackEdgePoint> extends 
         return TYPE;
     }
 
-    public void write(CompoundTag nbt, boolean clientPacket) {
+    @Override
+    public void write(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider lookupProvider, boolean clientPacket) {
         AccessorTrackTargetingBehavior accessor = (AccessorTrackTargetingBehavior) this;
         nbt.putUUID("SecondaryId", accessor.getId());
         nbt.put("SecondaryTargetTrack", NbtUtils.writeBlockPos(accessor.getTargetTrack()));
@@ -68,10 +69,11 @@ public class SecondaryTrackTargetingBehaviour<T extends TrackEdgePoint> extends 
         }
     }
 
-    public void read(CompoundTag nbt, boolean clientPacket) {
+    @Override
+    public void read(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider lookupProvider, boolean clientPacket) {
         AccessorTrackTargetingBehavior accessor = (AccessorTrackTargetingBehavior) this;
         accessor.setId(nbt.contains("SecondaryId") ? nbt.getUUID("SecondaryId") : UUID.randomUUID());
-    accessor.setTargetTrack(NbtUtils.readBlockPos(nbt, "SecondaryTargetTrack").orElse(getPos()));
+        accessor.setTargetTrack(NbtUtils.readBlockPos(nbt, "SecondaryTargetTrack").orElse(getPos()));
         accessor.setTargetDirection(nbt.getBoolean("SecondaryTargetDirection") ? Direction.AxisDirection.POSITIVE : Direction.AxisDirection.NEGATIVE);
         accessor.setOrthogonal(nbt.getBoolean("SecondaryOrtho"));
         if (nbt.contains("SecondaryPrevAxis"))

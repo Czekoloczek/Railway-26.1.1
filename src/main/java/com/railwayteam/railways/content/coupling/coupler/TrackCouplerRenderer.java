@@ -29,6 +29,7 @@ import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider.Context;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -68,17 +69,43 @@ public class TrackCouplerRenderer extends SmartBlockEntityRenderer<TrackCouplerB
         boolean offsetToSide = CustomTrackOverlayRendering.overlayWillOverlap(target);
 
         BlockPos targetPosition = target.getGlobalPosition();
+        Direction.AxisDirection targetDirection = target.getTargetDirection();
         Level level = te.getLevel();
         BlockState trackState = level.getBlockState(targetPosition);
         Block block = trackState.getBlock();
 
-        if (!(block instanceof ITrackBlock))
-            return;
+        if (!(block instanceof ITrackBlock)) {
+            boolean found = false;
+            try {
+                BlockPos rawTarget = ((com.railwayteam.railways.mixin.AccessorTrackTargetingBehavior) target).getTargetTrack();
+                BlockState tryState = level.getBlockState(rawTarget);
+                if (tryState.getBlock() instanceof ITrackBlock) {
+                    trackState = tryState;
+                    targetPosition = rawTarget;
+                    block = tryState.getBlock();
+                    found = true;
+                } else {
+                    BlockPos worldPos = pos.offset(rawTarget);
+                    tryState = level.getBlockState(worldPos);
+                    if (tryState.getBlock() instanceof ITrackBlock) {
+                        trackState = tryState;
+                        targetPosition = worldPos;
+                        block = tryState.getBlock();
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                    return;
+            } catch (Exception ignored) {
+                return;
+            }
+        }
 
         ms.pushPose();
         TransformStack.of(ms)
             .translate(targetPosition.subtract(pos));
-        CustomTrackOverlayRendering.renderOverlay(level, targetPosition, target.getTargetDirection(), target.getTargetBezier(), ms,
+        CustomTrackOverlayRendering.renderOverlay(level, targetPosition, targetDirection, target.getTargetBezier(), ms,
             buffer, light, overlay, getCouplerOverlayModel(te), 1, offsetToSide);
         ms.popPose();
     }
