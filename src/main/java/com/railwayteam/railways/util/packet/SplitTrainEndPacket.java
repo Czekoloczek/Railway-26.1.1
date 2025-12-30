@@ -33,21 +33,25 @@ import java.util.UUID;
 public class SplitTrainEndPacket implements S2CPacket {
     final UUID newTrainId;
     final UUID originalTrainOwner;
+    final double speed;
 
-    public SplitTrainEndPacket(UUID newTrainId, UUID originalTrainOwner) {
+    public SplitTrainEndPacket(UUID newTrainId, UUID originalTrainOwner, double speed) {
         this.newTrainId = newTrainId;
         this.originalTrainOwner = originalTrainOwner;
+        this.speed = speed;
     }
 
     public SplitTrainEndPacket(FriendlyByteBuf buf) {
         this.newTrainId = buf.readUUID();
         this.originalTrainOwner = buf.readUUID();
+        this.speed = buf.readDouble();
     }
 
     @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeUUID(this.newTrainId);
         buffer.writeUUID(this.originalTrainOwner);
+        buffer.writeDouble(this.speed);
     }
 
     @Override
@@ -55,14 +59,17 @@ public class SplitTrainEndPacket implements S2CPacket {
     public void handle(Minecraft mc) {
         Level level = mc.level;
         if (level != null) {
-            if (!CreateClient.RAILWAYS.trains.containsKey(newTrainId)) {
+            Train train = CreateClient.RAILWAYS.trains.get(newTrainId);
+            if (train == null) {
                 try {
-                    Train newTrain = new Train(newTrainId, null, null, new ArrayList<>(), new ArrayList<>(), false, 0);
-                    CreateClient.RAILWAYS.trains.put(newTrainId, newTrain);
+                    train = new Train(newTrainId, null, null, new ArrayList<>(), new ArrayList<>(), false, 0);
+                    CreateClient.RAILWAYS.trains.put(newTrainId, train);
                 } catch (Exception e) {
                     // Failed to create new train
                 }
             }
+            if (train != null)
+                train.speed = this.speed;
         }
     }
 }

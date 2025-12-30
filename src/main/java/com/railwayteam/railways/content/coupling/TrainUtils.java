@@ -102,6 +102,7 @@ public class TrainUtils {
         }
         
         Train newTrain = new Train(java.util.UUID.randomUUID(), train.owner, train.graph, newCarriages, newSpacings, false, 0);
+        newTrain.speed = train.speed;
         
         for (int i = 0; i < numberOffEnd; i++) {
             train.carriages.remove(splitIndex);
@@ -143,7 +144,7 @@ public class TrainUtils {
         
         PlayerSelection allPlayers = PlayerSelection.all();
         
-        CRPackets.PACKETS.sendTo(allPlayers, new SplitTrainEndPacket(newTrain.id, train.owner));
+        CRPackets.PACKETS.sendTo(allPlayers, new SplitTrainEndPacket(newTrain.id, train.owner, train.speed));
         
         CRPackets.PACKETS.sendTo(allPlayers, new InitializeTrainCarriagesPacket(newTrain));
         
