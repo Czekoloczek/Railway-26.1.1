@@ -21,6 +21,7 @@ package com.railwayteam.railways.neoforge;
 import com.mojang.brigadier.CommandDispatcher;
 import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.RailwaysClient;
+import com.railwayteam.railways.content.conductor.ConductorCapHumanoidLayer;
 import com.railwayteam.railways.content.conductor.ConductorRenderer;
 import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntity;
 import com.railwayteam.railways.content.fuel.tank.FuelTankRenderer;
@@ -41,7 +42,10 @@ import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -64,6 +68,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,8 +87,23 @@ public class RailwaysClientImpl {
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onBuiltinPackRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onParticleProviderRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onRendererRegistration);
+		RailwaysImpl.bus.addListener(RailwaysClientImpl::onAddLayers);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onClientExtensionsRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onClientSetup);
+	}
+
+	private static void onAddLayers(EntityRenderersEvent.AddLayers event) {
+		for (PlayerSkin.Model skin : event.getSkins()) {
+			var renderer = event.getSkin(skin);
+			if (renderer instanceof PlayerRenderer playerRenderer) {
+				playerRenderer.addLayer(new ConductorCapHumanoidLayer<>(playerRenderer));
+			}
+		}
+
+		var armorStand = event.getRenderer(EntityType.ARMOR_STAND);
+		if (armorStand instanceof ArmorStandRenderer armorStandRenderer) {
+			armorStandRenderer.addLayer(new ConductorCapHumanoidLayer<>(armorStandRenderer));
+		}
 	}
 
 	private static void onClientExtensionsRegistration(RegisterClientExtensionsEvent event) {
