@@ -20,6 +20,7 @@ package com.railwayteam.railways.content.fuel.tank;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.railwayteam.railways.compat.create.MountedFuelTankSyncDeferral;
 import com.railwayteam.railways.content.fuel.tank.FuelTankMountedStorage.Handler;
 import com.railwayteam.railways.mixin.AccessorContraption;
 import com.railwayteam.railways.registry.neoforge.CRMountedStorageTypesImpl;
@@ -58,7 +59,7 @@ public class FuelTankMountedStorage extends WrapperMountedFluidStorage<Handler> 
 		if (be instanceof FuelTankBlockEntity tank && tank.isController()) {
 			FluidTank inventory = tank.getTankInventory();
 			// capacity shouldn't change, leave it
-			inventory.setFluid(this.wrapped.getFluid());
+			inventory.setFluid(this.wrapped.getFluid().copy());
 		}
 	}
 
@@ -87,11 +88,13 @@ public class FuelTankMountedStorage extends WrapperMountedFluidStorage<Handler> 
 			return;
 
 		BlockEntity be = contraption.getOrCreateClientContraptionLazy().getBlockEntity(localPos);
-		if (!(be instanceof FuelTankBlockEntity tank))
+		if (!(be instanceof FuelTankBlockEntity tank)) {
+			MountedFuelTankSyncDeferral.defer(entity.getId(), localPos, this.getFluid());
 			return;
+		}
 
 		FluidTank inv = tank.getTankInventory();
-		inv.setFluid(this.getFluid());
+		inv.setFluid(this.getFluid().copy());
 		float fillLevel = inv.getFluidAmount() / (float) inv.getCapacity();
 		if (tank.getFluidLevel() == null) {
 			tank.setFluidLevel(LerpedFloat.linear().startWithValue(fillLevel));
@@ -119,7 +122,7 @@ public class FuelTankMountedStorage extends WrapperMountedFluidStorage<Handler> 
 		public Handler(int capacity, FluidStack stack) {
 			super(capacity);
 			Objects.requireNonNull(stack);
-			this.setFluid(stack);
+			this.setFluid(stack.copy());
 		}
 
 		@Override

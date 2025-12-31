@@ -19,6 +19,7 @@
 package com.railwayteam.railways.events;
 
 import com.railwayteam.railways.annotation.event.MultiLoaderEvent;
+import com.railwayteam.railways.compat.create.MountedFuelTankSyncDeferral;
 import com.railwayteam.railways.compat.create.MountedStorageSyncDeferral;
 import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.bogey_menu.handler.BogeyMenuEventsHandler;
@@ -30,6 +31,8 @@ import com.railwayteam.railways.registry.CRKeys;
 import com.railwayteam.railways.registry.CRPackets;
 import com.railwayteam.railways.util.packet.ConfigureDevCapeC2SPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -45,6 +48,19 @@ public class ClientEvents {
 
         Level level = mc.level;
         MountedStorageSyncDeferral.clientTick(mc);
+        MountedFuelTankSyncDeferral.clientTick(mc, (BlockEntity be, net.neoforged.neoforge.fluids.FluidStack fluid) -> {
+            if (!(be instanceof com.railwayteam.railways.content.fuel.tank.FuelTankBlockEntity tank))
+                return false;
+
+            FluidTank inv = tank.getTankInventory();
+            inv.setFluid(fluid);
+            float fillLevel = inv.getFluidAmount() / (float) inv.getCapacity();
+            if (tank.getFluidLevel() == null) {
+                tank.setFluidLevel(net.createmod.catnip.animation.LerpedFloat.linear().startWithValue(fillLevel));
+            }
+            tank.getFluidLevel().chase(fillLevel, 0.5, net.createmod.catnip.animation.LerpedFloat.Chaser.EXP);
+            return true;
+        });
         long ticks = level == null ? 1 : level.getGameTime();
         if (ticks % 40 == 0 && previousDevCapeSetting != (previousDevCapeSetting = CRConfigs.client().useDevCape.get())) {
             CRPackets.PACKETS.send(new ConfigureDevCapeC2SPacket(previousDevCapeSetting));
