@@ -28,6 +28,8 @@ This mod will only actively support the **newest version of Create**, and **Mine
 
 A **Pre-release** version is expected to roll out in the near future, though the exact date can't be determined.
 
+This mod is currently going through the alpha testing phase, the beta version will be release if no major bugs are present.
+
 >[!Important]
 **Please note that this port is currently not _generally released_.**
 
