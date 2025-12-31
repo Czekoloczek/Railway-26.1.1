@@ -19,6 +19,7 @@
 package com.railwayteam.railways.events;
 
 import com.railwayteam.railways.annotation.event.MultiLoaderEvent;
+import com.railwayteam.railways.compat.create.MountedStorageSyncDeferral;
 import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.bogey_menu.handler.BogeyMenuEventsHandler;
 import com.railwayteam.railways.content.conductor.ConductorPossessionController;
@@ -43,6 +44,7 @@ public class ClientEvents {
         PhantomSpriteManager.tick(mc);
 
         Level level = mc.level;
+        MountedStorageSyncDeferral.clientTick(mc);
         long ticks = level == null ? 1 : level.getGameTime();
         if (ticks % 40 == 0 && previousDevCapeSetting != (previousDevCapeSetting = CRConfigs.client().useDevCape.get())) {
             CRPackets.PACKETS.send(new ConfigureDevCapeC2SPacket(previousDevCapeSetting));

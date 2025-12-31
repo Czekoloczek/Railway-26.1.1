@@ -21,6 +21,7 @@ package com.railwayteam.railways.content.fuel.tank;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.railwayteam.railways.content.fuel.tank.FuelTankMountedStorage.Handler;
+import com.railwayteam.railways.mixin.AccessorContraption;
 import com.railwayteam.railways.registry.neoforge.CRMountedStorageTypesImpl;
 import com.simibubi.create.api.contraption.storage.SyncedMountedStorage;
 import com.simibubi.create.api.contraption.storage.fluid.WrapperMountedFluidStorage;
@@ -81,13 +82,11 @@ public class FuelTankMountedStorage extends WrapperMountedFluidStorage<Handler> 
 
 	@Override
 	public void afterSync(Contraption contraption, BlockPos localPos) {
-		AbstractContraptionEntity entity = contraption.entity;
-		if (entity == null)
+		AbstractContraptionEntity entity = ((AccessorContraption) contraption).railways$getEntity();
+		if (entity == null || entity.level() == null || !entity.level().isClientSide)
 			return;
-		Level world = entity.level();
-		if (world == null)
-			return;
-		BlockEntity be = world.getBlockEntity(localPos);
+
+		BlockEntity be = contraption.getOrCreateClientContraptionLazy().getBlockEntity(localPos);
 		if (!(be instanceof FuelTankBlockEntity tank))
 			return;
 
