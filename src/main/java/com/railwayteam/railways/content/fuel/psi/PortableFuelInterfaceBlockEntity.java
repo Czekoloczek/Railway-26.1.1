@@ -40,32 +40,26 @@ public class PortableFuelInterfaceBlockEntity extends PortableStorageInterfaceBl
     @Override
     public void startTransferringTo(Contraption contraption, float distance) {
         MountedFluidStorageWrapper fuels = ((IContraptionFuel) contraption).railways$getFluidFuels();
-        this.currentHandler = new InterfaceFluidHandler(fuels != null ? fuels : new FluidTank(0));
-        this.currentHandler.keepAlive();
+        this.fluidHandler.setWrapped(fuels != null ? fuels : new FluidTank(0));
+        this.fluidHandler.keepAlive();
         super.startTransferringTo(contraption, distance);
     }
 
     @Override
     protected void invalidateCapability() {
-        this.currentHandler = null;
+        this.fluidHandler.setWrapped(new FluidTank(0));
     }
 
     @Override
     protected void stopTransferring() {
-        this.currentHandler = null;
+        this.fluidHandler.setWrapped(new FluidTank(0));
         super.stopTransferring();
     }
 
-    private @Nullable InterfaceFluidHandler currentHandler;
-
-    private InterfaceFluidHandler createEmptyHandler() {
-        return new InterfaceFluidHandler(new FluidTank(0));
-    }
+    private final InterfaceFluidHandler fluidHandler = new InterfaceFluidHandler(new FluidTank(0));
 
     public IFluidHandler getFluidHandler(@Nullable Direction side) {
-        if (currentHandler == null)
-            return createEmptyHandler();
-        return currentHandler;
+        return fluidHandler;
     }
 
     public class InterfaceFluidHandler implements IFluidHandler {
@@ -73,6 +67,10 @@ public class PortableFuelInterfaceBlockEntity extends PortableStorageInterfaceBl
         private IFluidHandler wrapped;
 
         public InterfaceFluidHandler(IFluidHandler wrapped) {
+            this.wrapped = wrapped;
+        }
+
+        public void setWrapped(IFluidHandler wrapped) {
             this.wrapped = wrapped;
         }
 
