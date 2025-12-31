@@ -24,7 +24,7 @@ This mod will only actively support the **newest version of Create**, and **Mine
    [![Build](https://github.com/PoppyBlossom/Railway/actions/workflows/build.yml/badge.svg)](https://github.com/PoppyBlossom/Railway/actions/workflows/build.yml)
 </div>
  
-**Releases**
+### Releases
 
 A **Pre-release** version is expected to roll out in the near future, though the exact date can't be determined.
 
