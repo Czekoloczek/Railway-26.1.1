@@ -21,8 +21,6 @@ package com.railwayteam.railways.util.packet;
 import com.railwayteam.railways.mixin.AccessorCarriageContraptionEntity;
 import com.railwayteam.railways.mixin_interfaces.IUpdateCount;
 import com.railwayteam.railways.multiloader.S2CPacket;
-import com.simibubi.create.CreateClient;
-import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.CarriageContraptionEntity;
 import com.simibubi.create.content.trains.entity.Train;
 import net.neoforged.api.distmarker.Dist;
@@ -65,24 +63,12 @@ public class CarriageContraptionEntityUpdatePacket implements S2CPacket {
     if (level != null) {
       Entity target = level.getEntity(this.id);
       if (target instanceof CarriageContraptionEntity cce) {
-        // Check if the train exists before binding
-        Train train = CreateClient.RAILWAYS.trains.get(trainId);
-        if (train != null) {
-          Carriage currentCarriage = ((AccessorCarriageContraptionEntity) cce).railways$getCarriage();
-          
-          cce.trainId = trainId;
-          cce.carriageIndex = carriageIndex;
-          
-          if (currentCarriage != null) {
-            while (train.carriages.size() <= carriageIndex) {
-              train.carriages.add(null);
-            }
-            train.carriages.set(carriageIndex, currentCarriage);
-          }
-          
-          ((AccessorCarriageContraptionEntity) cce).railways$bindCarriage();
-          ((IUpdateCount) cce).railways$markUpdate();
-        }
+        // Force re-binding in case this entity previously belonged to a different train.
+        cce.trainId = trainId;
+        ((AccessorCarriageContraptionEntity) cce).railways$setCarriage(null);
+        cce.carriageIndex = carriageIndex;
+        ((AccessorCarriageContraptionEntity) cce).railways$bindCarriage();
+        ((IUpdateCount) cce).railways$markUpdate();
       }
     }
   }

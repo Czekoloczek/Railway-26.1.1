@@ -64,18 +64,11 @@ public class SplitTrainEndPacket implements S2CPacket {
         Level level = mc.level;
         if (level != null) {
             Train train = CreateClient.RAILWAYS.trains.get(newTrainId);
-            if (train == null) {
-                try {
-                    train = new Train(newTrainId, originalTrainOwner, null, new ArrayList<>(), new ArrayList<>(), doubleEnded, 0);
-                    CreateClient.RAILWAYS.trains.put(newTrainId, train);
-                } catch (Exception e) {
-                    // Failed to create new train
-                }
-            }
-            if (train != null) {
-                train.doubleEnded = this.doubleEnded;
-                train.speed = this.speed;
-            }
+            // Creating a placeholder Train here can race and leave it with empty carriage data.
+            if (train == null)
+                return;
+            train.doubleEnded = this.doubleEnded;
+            train.speed = this.speed;
         }
     }
 }
