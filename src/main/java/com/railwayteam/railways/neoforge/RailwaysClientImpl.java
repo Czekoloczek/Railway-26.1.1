@@ -30,10 +30,12 @@ import com.railwayteam.railways.content.switches.TrackSwitchRenderer;
 import com.railwayteam.railways.content.coupling.coupler.TrackCouplerRenderer;
 import com.railwayteam.railways.neoforge.client.track.FullShapeDestroyEffects;
 import com.railwayteam.railways.registry.CRBlockEntities;
+import com.railwayteam.railways.registry.CRBlocks;
 import com.railwayteam.railways.registry.CRParticleTypes;
 import com.railwayteam.railways.registry.CREntities;
 import com.railwayteam.railways.registry.neoforge.CRBlockEntitiesImpl;
 import com.simibubi.create.content.contraptions.actors.psi.PSIVisual;
+import com.simibubi.create.content.decoration.copycat.CopycatBlock;
 import com.simibubi.create.content.trains.bogey.BogeyBlockEntityRenderer;
 import com.simibubi.create.content.trains.bogey.BogeyBlockEntityVisual;
 import com.simibubi.create.content.trains.track.TrackBlock;
@@ -59,6 +61,7 @@ import net.minecraft.server.packs.repository.PackSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -89,7 +92,17 @@ public class RailwaysClientImpl {
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onRendererRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onAddLayers);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onClientExtensionsRegistration);
+		RailwaysImpl.bus.addListener(RailwaysClientImpl::onBlockColorHandlerRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onClientSetup);
+	}
+
+	private static void onBlockColorHandlerRegistration(RegisterColorHandlersEvent.Block event) {
+		// Registrate wiring can be missed depending on init timing (similar to BE renderers).
+		// Ensure copycat headstocks always use Create's wrappedColor so biome tints (e.g. grass overlay) render correctly.
+		event.register(CopycatBlock.wrappedColor(),
+			CRBlocks.COPYCAT_HEADSTOCK.get(),
+			CRBlocks.COPYCAT_HEADSTOCK_BARS.get()
+		);
 	}
 
 	private static void onAddLayers(EntityRenderersEvent.AddLayers event) {
