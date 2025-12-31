@@ -41,9 +41,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class FuelTankMountedStorage extends WrapperMountedFluidStorage<Handler> implements SyncedMountedStorage {
-    public static final MapCodec<FuelTankMountedStorage> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+	public static final MapCodec<FuelTankMountedStorage> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 			ExtraCodecs.NON_NEGATIVE_INT.fieldOf("capacity").forGetter(FuelTankMountedStorage::getCapacity),
-			FluidStack.CODEC.fieldOf("fluid").forGetter(FuelTankMountedStorage::getFluid)
+			FluidStack.lenientOtionalFieldOf("fluid").forGetter(FuelTankMountedStorage::getFluid)
 	).apply(i, FuelTankMountedStorage::new));
 
 	private boolean dirty;
