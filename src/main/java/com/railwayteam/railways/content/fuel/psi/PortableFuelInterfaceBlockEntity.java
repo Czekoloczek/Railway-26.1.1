@@ -41,6 +41,7 @@ public class PortableFuelInterfaceBlockEntity extends PortableStorageInterfaceBl
     public void startTransferringTo(Contraption contraption, float distance) {
         MountedFluidStorageWrapper fuels = ((IContraptionFuel) contraption).railways$getFluidFuels();
         this.currentHandler = new InterfaceFluidHandler(fuels != null ? fuels : new FluidTank(0));
+        this.currentHandler.keepAlive();
         super.startTransferringTo(contraption, distance);
     }
 
