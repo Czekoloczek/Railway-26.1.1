@@ -24,6 +24,7 @@ import com.railwayteam.railways.content.fuel.tank.FuelTankMountedStorage.Handler
 import com.railwayteam.railways.registry.neoforge.CRMountedStorageTypesImpl;
 import com.simibubi.create.api.contraption.storage.SyncedMountedStorage;
 import com.simibubi.create.api.contraption.storage.fluid.WrapperMountedFluidStorage;
+import com.simibubi.create.content.contraptions.AbstractContraptionEntity;
 import com.simibubi.create.content.contraptions.Contraption;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.core.BlockPos;
@@ -80,7 +81,13 @@ public class FuelTankMountedStorage extends WrapperMountedFluidStorage<Handler> 
 
 	@Override
 	public void afterSync(Contraption contraption, BlockPos localPos) {
-		BlockEntity be = contraption.getContraptionWorld().getBlockEntity(localPos);
+		AbstractContraptionEntity entity = contraption.entity;
+		if (entity == null)
+			return;
+		Level world = entity.level();
+		if (world == null)
+			return;
+		BlockEntity be = world.getBlockEntity(localPos);
 		if (!(be instanceof FuelTankBlockEntity tank))
 			return;
 
