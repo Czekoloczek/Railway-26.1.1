@@ -11,7 +11,7 @@
 This repository is a unofficial port of **Create Steam 'n' Rails** for **Neoforge 1.21.1**.
 
 >[!Important]
-> **This port is a subsitution for _[Create: Steam 'n' Rails](https://github.com/Layers-of-Railways/Railway)_ until the developers release their official version for 1.21.1**.
+> **This port is a substitution for _[Create: Steam 'n' Rails](https://github.com/Layers-of-Railways/Railway)_ until the developers release their official version for 1.21.1**.
 
 ### Version Support
 This mod will only actively support the **newest version of Create**, and **Minecraft 1.21.1 on Neoforge**.
@@ -26,12 +26,12 @@ This mod will only actively support the **newest version of Create**, and **Mine
  
 ### Releases
 
-A **Pre-release** version is expected to roll out in the near future, though the exact date can't be determined.
+A **Pre-release Version** is now available for download!
 
-This mod is currently going through the alpha testing phase, the beta version will be release if no major bugs are present.
+>[!Warning]
+>This mod is currently under review in Modrinth and CurseForge
 
->[!Important]
-**Please note that this port is currently not _generally released_.**
+You can download it here: [Modrinth](https://modrinth.com/mod/create-steam-n-rails-1.21.1) [CurseForge](https://curseforge.com/minecraft/mc-mods/steam-n-rails-neoforge)
 
 ## Credits
 This project is an **unofficial fork** of **[Create: Steam 'n' Rails](https://github.com/Layers-of-Railways/Railway) created by the Layers of Railways team.**
