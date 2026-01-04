@@ -171,14 +171,17 @@ dependencies {
         exclude(group = "net.createmod.ponder")
     }
     
-    // Ponder - Create's in-game documentation system
-    implementation("net.createmod.ponder:Ponder-NeoForge-${minecraftVersion}:${ponderVersion}")
+    // Ponder
+    implementation("net.createmod.ponder:ponder-neoforge:$ponderVersion+mc$minecraftVersion")
     
-    // Flywheel - rendering engine
+    // Flywheel
     implementation("dev.engine-room.flywheel:flywheel-neoforge-${minecraftVersion}:${flywheelVersion}")
     
     // Registrate
     implementation("com.tterrag.registrate:Registrate:${registrateForgeVersion}")
+    
+    // Architectury
+    implementation("dev.architectury:architectury-neoforge:13.0.8")
     
     // MixinExtras
     implementation("io.github.llamalad7:mixinextras-neoforge:${mixinExtrasVersion}")
