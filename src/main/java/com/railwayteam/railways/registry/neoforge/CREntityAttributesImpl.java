@@ -24,6 +24,11 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 public class CREntityAttributesImpl {
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
-		event.put(CREntities.CONDUCTOR.get(), ConductorEntity.createAttributes().build());
+		// Only register if not already registered by Registrate
+		try {
+			event.put(CREntities.CONDUCTOR.get(), ConductorEntity.createAttributes().build());
+		} catch (IllegalStateException e) {
+			// Already registered
+		}
 	}
 }
