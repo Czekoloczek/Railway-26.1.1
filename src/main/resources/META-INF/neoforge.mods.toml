@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
-issueTrackerURL = "https://github.com/Layers-of-Railways/Railway/issues"
-license = "MIT"
+issueTrackerURL = "https://github.com/Porters-of-Railways/Railway-1.21.1/issues"
+license = "LGPL-3.0 license"
 
 [[mods]]
 modId = "railways"
@@ -37,7 +37,7 @@ side = "BOTH"
 [[dependencies.railways]]
 modId="create"
 mandatory=true
-versionRange="6.0.8"
+versionRange="[6.0.8,)"
 ordering="NONE"
 side="BOTH"
 
