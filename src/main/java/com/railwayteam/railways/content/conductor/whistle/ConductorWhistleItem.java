@@ -21,6 +21,7 @@ package com.railwayteam.railways.content.conductor.whistle;
 import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.conductor.ConductorEntity;
 import com.railwayteam.railways.mixin.AccessorCarriage;
+import com.railwayteam.railways.mixin.AccessorTrackTargetingBehavior;
 import com.railwayteam.railways.mixin.AccessorScheduleRuntime;
 import com.railwayteam.railways.mixin_interfaces.ICarriageConductors;
 import com.railwayteam.railways.registry.CRBlocks;
@@ -71,6 +72,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -200,9 +202,41 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
             boolean foundConductor = false;
             Carriage conductorCarriage = null;
             for (Carriage carriage : boundTrain.carriages) {
+                // First, try the controlling conductors list
                 if (((ICarriageConductors) carriage).railways$getControllingConductors().contains(conductorId)) {
                     foundConductor = true;
                     conductorCarriage = carriage;
+                    break;
+                }
+                // Fallback: check serialized passengers for the conductor UUID
+                for (CompoundTag passengerTag : ((AccessorCarriage) carriage).getSerialisedPassengers().values()) {
+                    if (passengerTag.contains("PlayerPassenger")) continue;
+                    if (passengerTag.contains("id") && CREntities.CONDUCTOR.getId().equals(ResourceLocation.parse(passengerTag.getString("id")))) {
+                        if (passengerTag.hasUUID("UUID") && passengerTag.getUUID("UUID").equals(conductorId)) {
+                            foundConductor = true;
+                            conductorCarriage = carriage;
+                            break;
+                        }
+                    }
+                }
+                if (foundConductor) break;
+                // Fallback: check currently present entities on this carriage
+                final java.util.concurrent.atomic.AtomicBoolean presentFound = new java.util.concurrent.atomic.AtomicBoolean(false);
+                final MutableObject<Carriage> presentCarriage = new MutableObject<>(null);
+                carriage.forEachPresentEntity(cce -> {
+                    if (!presentFound.get()) {
+                        for (Entity passenger : cce.getPassengers()) {
+                            if (passenger instanceof ConductorEntity && passenger.getUUID().equals(conductorId)) {
+                                presentFound.set(true);
+                                presentCarriage.setValue(carriage);
+                                break;
+                            }
+                        }
+                    }
+                });
+                if (presentFound.get()) {
+                    foundConductor = true;
+                    conductorCarriage = presentCarriage.getValue();
                     break;
                 }
             }
@@ -270,6 +304,26 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(stackTag));
 
                 updateCustomBlockEntityTag(placePos, level, player, stack, placeState);
+
+                // Ensure the station edge point is created and named immediately to avoid resolution issues
+                BlockEntity be = level.getBlockEntity(placePos);
+                if (be instanceof ConductorWhistleFlagBlockEntity flagBe) {
+                    // Directly configure the TrackTargetingBehaviour before ticking
+                    AccessorTrackTargetingBehavior accessor = (AccessorTrackTargetingBehavior) flagBe.station;
+                    BlockPos trackPos = NbtUtils.readBlockPos(stackTag, "SelectedPos").orElse(pos);
+                    accessor.setTargetTrack(trackPos.subtract(placePos));
+                    accessor.setTargetDirection(stackTag.getBoolean("SelectedDirection") 
+                        ? Direction.AxisDirection.POSITIVE 
+                        : Direction.AxisDirection.NEGATIVE);
+                    
+                    // Now tick to create the edge point with correct data
+                    flagBe.station.tick();
+                    
+                    // Set the station name once the edge point exists
+                    if (flagBe.station.getEdgePoint() != null) {
+                        flagBe.station.getEdgePoint().name = stationName;
+                    }
+                }
                 stackTag.remove("SelectedPos");
                 stackTag.remove("SelectedDirection");
                 stackTag.remove("BlockEntityTag");

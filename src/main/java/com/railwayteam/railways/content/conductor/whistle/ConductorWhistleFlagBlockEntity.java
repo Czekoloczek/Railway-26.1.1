@@ -65,6 +65,7 @@ public class ConductorWhistleFlagBlockEntity extends SmartBlockEntity implements
         if (level.isClientSide)
             return;
 
+        // Force edge point creation and naming on first lazy tick
         if (station.getEdgePoint() == null)
             station.tick();
         if (station.getEdgePoint() != null)
