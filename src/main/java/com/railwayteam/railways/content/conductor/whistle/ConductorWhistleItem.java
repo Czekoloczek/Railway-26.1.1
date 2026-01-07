@@ -21,6 +21,7 @@ package com.railwayteam.railways.content.conductor.whistle;
 import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.conductor.ConductorEntity;
 import com.railwayteam.railways.mixin.AccessorCarriage;
+import com.railwayteam.railways.mixin.AccessorTrackTargetingBehavior;
 import com.railwayteam.railways.mixin.AccessorScheduleRuntime;
 import com.railwayteam.railways.mixin_interfaces.ICarriageConductors;
 import com.railwayteam.railways.registry.CRBlocks;
@@ -307,9 +308,21 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
                 // Ensure the station edge point is created and named immediately to avoid resolution issues
                 BlockEntity be = level.getBlockEntity(placePos);
                 if (be instanceof ConductorWhistleFlagBlockEntity flagBe) {
+                    // Directly configure the TrackTargetingBehaviour before ticking
+                    AccessorTrackTargetingBehavior accessor = (AccessorTrackTargetingBehavior) flagBe.station;
+                    BlockPos trackPos = NbtUtils.readBlockPos(stackTag, "SelectedPos").orElse(pos);
+                    accessor.setTargetTrack(trackPos.subtract(placePos));
+                    accessor.setTargetDirection(stackTag.getBoolean("SelectedDirection") 
+                        ? Direction.AxisDirection.POSITIVE 
+                        : Direction.AxisDirection.NEGATIVE);
+                    
+                    // Now tick to create the edge point with correct data
                     flagBe.station.tick();
-                    if (flagBe.station.getEdgePoint() != null)
+                    
+                    // Set the station name once the edge point exists
+                    if (flagBe.station.getEdgePoint() != null) {
                         flagBe.station.getEdgePoint().name = stationName;
+                    }
                 }
                 stackTag.remove("SelectedPos");
                 stackTag.remove("SelectedDirection");
