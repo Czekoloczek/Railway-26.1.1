@@ -1,7 +1,73 @@
 {
-  "variants": {
-    "": {
-      "model": "railways:block/conductor_whistle/block_pole"
+  "multipart": [
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/block_pole"
+      }
+    },
+    {
+      "when": {"color": "white"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_white"}
+    },
+    {
+      "when": {"color": "orange"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_orange"}
+    },
+    {
+      "when": {"color": "magenta"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_magenta"}
+    },
+    {
+      "when": {"color": "light_blue"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_light_blue"}
+    },
+    {
+      "when": {"color": "yellow"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_yellow"}
+    },
+    {
+      "when": {"color": "lime"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_lime"}
+    },
+    {
+      "when": {"color": "pink"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_pink"}
+    },
+    {
+      "when": {"color": "gray"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_gray"}
+    },
+    {
+      "when": {"color": "light_gray"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_light_gray"}
+    },
+    {
+      "when": {"color": "cyan"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_cyan"}
+    },
+    {
+      "when": {"color": "purple"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_purple"}
+    },
+    {
+      "when": {"color": "blue"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_blue"}
+    },
+    {
+      "when": {"color": "brown"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_brown"}
+    },
+    {
+      "when": {"color": "green"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_green"}
+    },
+    {
+      "when": {"color": "red"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_red"}
+    },
+    {
+      "when": {"color": "black"},
+      "apply": {"model": "railways:block/conductor_whistle/flag_black"}
     }
-  }
+  ]
 }

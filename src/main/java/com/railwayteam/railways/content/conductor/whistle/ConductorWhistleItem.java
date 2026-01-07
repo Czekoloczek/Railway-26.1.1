@@ -62,6 +62,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -292,7 +293,12 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
 
                 stationName = SPECIAL_MARKER + placePos.toShortString();
 
-                BlockState placeState = CRBlocks.CONDUCTOR_WHISTLE_FLAG.getDefaultState();
+                DyeColor color = ConductorEntity.colorFrom(stackTag.getByte("SelectedColor"));
+                if (color == null)
+                    color = DyeColor.RED;
+
+                BlockState placeState = CRBlocks.CONDUCTOR_WHISTLE_FLAG.getDefaultState()
+                    .setValue(ConductorWhistleFlagBlock.COLOR, color);
                 level.setBlock(placePos, placeState, 11);
                 CompoundTag teTag = new CompoundTag();
                 teTag.putString("Name", stationName);
@@ -323,6 +329,9 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
                     if (flagBe.station.getEdgePoint() != null) {
                         flagBe.station.getEdgePoint().name = stationName;
                     }
+                    
+                    // Sync block entity data to client for rendering
+                    flagBe.notifyUpdate();
                 }
                 stackTag.remove("SelectedPos");
                 stackTag.remove("SelectedDirection");
