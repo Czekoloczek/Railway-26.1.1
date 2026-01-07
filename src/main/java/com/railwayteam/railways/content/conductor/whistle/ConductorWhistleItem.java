@@ -25,6 +25,7 @@ import com.railwayteam.railways.mixin.AccessorTrackTargetingBehavior;
 import com.railwayteam.railways.mixin.AccessorScheduleRuntime;
 import com.railwayteam.railways.mixin_interfaces.ICarriageConductors;
 import com.railwayteam.railways.registry.CRBlocks;
+import com.railwayteam.railways.registry.CRTrackMaterials;
 import com.railwayteam.railways.registry.CREntities;
 import com.railwayteam.railways.registry.CRSounds;
 import com.railwayteam.railways.util.TextUtils;
@@ -43,9 +44,11 @@ import com.simibubi.create.content.trains.schedule.destination.DestinationInstru
 import com.simibubi.create.content.trains.station.StationBlock;
 import com.simibubi.create.content.trains.station.StationBlockEntity;
 import com.simibubi.create.content.trains.track.ITrackBlock;
+import com.simibubi.create.content.trains.track.TrackBlock;
 import com.simibubi.create.content.trains.track.TrackBlockOutline;
 import com.simibubi.create.content.trains.track.TrackTargetingBlockItem;
 import com.simibubi.create.foundation.utility.CreateLang;
+import net.createmod.catnip.data.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -62,6 +65,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -247,8 +251,10 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
 
             if (state.getBlock() instanceof ITrackBlock track) {
                 Vec3 lookAngle = player.getLookAngle();
-                boolean front = track.getNearestTrackAxis(level, pos, state, lookAngle)
-                        .getSecond() == Direction.AxisDirection.POSITIVE;
+                Pair<Vec3, Direction.AxisDirection> nearestTrackAxis = track.getNearestTrackAxis(level, pos, state, lookAngle);
+                boolean front = nearestTrackAxis.getSecond() == Direction.AxisDirection.POSITIVE;
+                Vec3 axisVec = nearestTrackAxis.getFirst();
+                Direction.Axis axis = Math.abs(axisVec.x) > Math.abs(axisVec.z) ? Direction.Axis.X : Direction.Axis.Z;
 
                 stackTag.put("SelectedPos", NbtUtils.writeBlockPos(pos));
                 stackTag.putBoolean("SelectedDirection", front);
@@ -266,18 +272,66 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
                     return InteractionResult.FAIL;
                 }
 
-                Direction[] directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.UP};
+                int preferredOffset = 1;
+                if (state.getBlock() instanceof TrackBlock trackBlock) {
+                    var trackType = trackBlock.getMaterial().trackType;
+                    if (trackType == CRTrackMaterials.CRTrackType.WIDE_GAUGE)
+                        preferredOffset = 2;
+                    else if (trackType == CRTrackMaterials.CRTrackType.NARROW_GAUGE)
+                        preferredOffset = 1;
+                    else
+                        // Standard (and other non-narrow) tracks: place a bit farther out
+                        preferredOffset = 2;
+                }
+
                 Direction successDirection = null;
-                for (Direction direction : directions) {
-                    BlockPos placePos = pos.relative(direction);
-                    Vec3 hitPos = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)
-                            .add(direction.getStepX() * 0.5, direction.getStepY() * 0.5, direction.getStepZ() * 0.5);
-                    BlockPlaceContext ctx = new BlockPlaceContext(
-                            player, pContext.getHand(), stack, new BlockHitResult(hitPos, direction.getOpposite(), placePos, false)
-                    );
-                    if (level.getBlockState(placePos).canBeReplaced(ctx)) {
-                        successDirection = direction;
-                        break;
+                int successOffset = 1;
+
+                // Prefer placing on the side of the track (perpendicular to the track axis) on the player's side.
+                Direction preferredSide = null;
+                if (axis == Direction.Axis.X) {
+                    preferredSide = (player.getZ() > pos.getZ() + 0.5) ? Direction.SOUTH : Direction.NORTH;
+                } else if (axis == Direction.Axis.Z) {
+                    preferredSide = (player.getX() > pos.getX() + 0.5) ? Direction.EAST : Direction.WEST;
+                }
+
+                if (preferredSide != null) {
+                    Direction alternateSide = preferredSide.getOpposite();
+
+                    for (int offset : (preferredOffset > 1 ? new int[]{preferredOffset, 1} : new int[]{1})) {
+                        for (Direction side : new Direction[]{preferredSide, alternateSide}) {
+                            BlockPos placePos = pos.relative(side, offset);
+                            Vec3 hitPos = Vec3.atCenterOf(placePos);
+                            BlockPlaceContext ctx = new BlockPlaceContext(
+                                    player, pContext.getHand(), stack,
+                                    new BlockHitResult(hitPos, side.getOpposite(), placePos, false)
+                            );
+                            if (level.getBlockState(placePos).canBeReplaced(ctx)) {
+                                successDirection = side;
+                                successOffset = offset;
+                                break;
+                            }
+                        }
+                        if (successDirection != null)
+                            break;
+                    }
+                }
+
+                // Fallback: any adjacent space (legacy behavior)
+                if (successDirection == null) {
+                    Direction[] directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, Direction.UP};
+                    for (Direction direction : directions) {
+                        BlockPos placePos = pos.relative(direction);
+                        Vec3 hitPos = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5)
+                                .add(direction.getStepX() * 0.5, direction.getStepY() * 0.5, direction.getStepZ() * 0.5);
+                        BlockPlaceContext ctx = new BlockPlaceContext(
+                                player, pContext.getHand(), stack, new BlockHitResult(hitPos, direction.getOpposite(), placePos, false)
+                        );
+                        if (level.getBlockState(placePos).canBeReplaced(ctx)) {
+                            successDirection = direction;
+                            successOffset = 1;
+                            break;
+                        }
                     }
                 }
 
@@ -288,11 +342,17 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
                     return fail(player, "no_space");
                 }
 
-                BlockPos placePos = pos.relative(successDirection);
+                BlockPos placePos = pos.relative(successDirection, successOffset);
 
                 stationName = SPECIAL_MARKER + placePos.toShortString();
 
-                BlockState placeState = CRBlocks.CONDUCTOR_WHISTLE_FLAG.getDefaultState();
+                DyeColor color = ConductorEntity.colorFrom(stackTag.getByte("SelectedColor"));
+                if (color == null)
+                    color = DyeColor.RED;
+
+                BlockState placeState = CRBlocks.CONDUCTOR_WHISTLE_FLAG.getDefaultState()
+                    .setValue(ConductorWhistleFlagBlock.FACING, successDirection.getAxis().isHorizontal() ? successDirection : Direction.NORTH)
+                    .setValue(ConductorWhistleFlagBlock.COLOR, color);
                 level.setBlock(placePos, placeState, 11);
                 CompoundTag teTag = new CompoundTag();
                 teTag.putString("Name", stationName);
@@ -323,6 +383,9 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
                     if (flagBe.station.getEdgePoint() != null) {
                         flagBe.station.getEdgePoint().name = stationName;
                     }
+                    
+                    // Sync block entity data to client for rendering
+                    flagBe.notifyUpdate();
                 }
                 stackTag.remove("SelectedPos");
                 stackTag.remove("SelectedDirection");

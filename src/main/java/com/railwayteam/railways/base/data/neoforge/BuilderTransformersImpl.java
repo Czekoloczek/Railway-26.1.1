@@ -163,10 +163,47 @@ public class BuilderTransformersImpl {
     }
 
     public static <B extends ConductorWhistleFlagBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> conductorWhistleFlag() {
-        return a -> a.blockstate((c, p) -> p.getVariantBuilder(c.get())
-            .forAllStates(state -> ConfiguredModel.builder()
-                .modelFile(p.models().getExistingFile(Railways.asResource("block/conductor_whistle/block_pole")))
-                .build()));
+        return a -> a.blockstate((c, p) -> {
+            var builder = p.getMultipartBuilder(c.get());
+
+            for (Direction facing : Direction.Plane.HORIZONTAL) {
+                int rotY = switch (facing) {
+                    case EAST -> 0;
+                    case SOUTH -> 90;
+                    case WEST -> 180;
+                    case NORTH -> 270;
+                    default -> 0;
+                };
+
+                builder.part()
+                    .modelFile(p.models().getExistingFile(Railways.asResource("block/conductor_whistle/block_pole")))
+                    .rotationY(rotY)
+                    .addModel()
+                    .condition(ConductorWhistleFlagBlock.FACING, facing)
+                    .end();
+            }
+
+            for (DyeColor color : DyeColor.values()) {
+                ResourceLocation modelLoc = Railways.asResource("block/conductor_whistle/flag_" + color.getSerializedName());
+                for (Direction facing : Direction.Plane.HORIZONTAL) {
+                    int rotY = switch (facing) {
+                        case EAST -> 0;
+                        case SOUTH -> 90;
+                        case WEST -> 180;
+                        case NORTH -> 270;
+                        default -> 0;
+                    };
+
+                    builder.part()
+                        .modelFile(p.models().getExistingFile(modelLoc))
+                        .rotationY(rotY)
+                        .addModel()
+                        .condition(ConductorWhistleFlagBlock.COLOR, color)
+                        .condition(ConductorWhistleFlagBlock.FACING, facing)
+                        .end();
+                }
+            }
+        });
     }
 
     public static <B extends DieselSmokeStackBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> dieselSmokeStack() {

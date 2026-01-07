@@ -19,21 +19,17 @@
 package com.railwayteam.railways.content.conductor.whistle;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.railwayteam.railways.registry.CRBlockPartials;
 import com.railwayteam.railways.util.CustomTrackOverlayRendering;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.trains.station.GlobalStation;
 import com.simibubi.create.content.trains.track.ITrackBlock;
 import com.simibubi.create.content.trains.track.TrackTargetingBehaviour;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
-import net.createmod.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class ConductorWhistleFlagRenderer extends SmartBlockEntityRenderer<ConductorWhistleFlagBlockEntity> {
@@ -45,9 +41,6 @@ public class ConductorWhistleFlagRenderer extends SmartBlockEntityRenderer<Condu
     protected void renderSafe(ConductorWhistleFlagBlockEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
         super.renderSafe(te, partialTicks, ms, buffer, light, overlay);
         renderEdgePoint(te, ms, buffer, light, overlay);
-
-        CachedBuffers.partial(CRBlockPartials.CONDUCTOR_WHISTLE_FLAGS.get(te.getColor()), Blocks.AIR.defaultBlockState())
-            .renderInto(ms, buffer.getBuffer(RenderType.cutout()));
     }
 
     private void renderEdgePoint(ConductorWhistleFlagBlockEntity te, PoseStack ms, MultiBufferSource buffer,
