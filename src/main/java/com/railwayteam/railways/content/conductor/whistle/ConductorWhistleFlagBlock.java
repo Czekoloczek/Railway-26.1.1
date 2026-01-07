@@ -22,24 +22,42 @@ import com.railwayteam.railways.registry.CRBlockEntities;
 import com.railwayteam.railways.registry.CRShapes;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ConductorWhistleFlagBlock extends Block implements IBE<ConductorWhistleFlagBlockEntity> {
     public static final EnumProperty<DyeColor> COLOR = EnumProperty.create("color", DyeColor.class);
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public ConductorWhistleFlagBlock(Properties pProperties) {
         super(pProperties);
-        registerDefaultState(defaultBlockState().setValue(COLOR, DyeColor.RED));
+        registerDefaultState(defaultBlockState()
+                .setValue(COLOR, DyeColor.RED)
+                .setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction dir = context.getClickedFace();
+        if (!dir.getAxis().isHorizontal())
+            dir = context.getHorizontalDirection();
+        return defaultBlockState()
+                .setValue(COLOR, DyeColor.RED)
+                .setValue(FACING, dir);
     }
 
     @Override
@@ -65,6 +83,6 @@ public class ConductorWhistleFlagBlock extends Block implements IBE<ConductorWhi
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(COLOR);
+        builder.add(COLOR, FACING);
     }
 }
