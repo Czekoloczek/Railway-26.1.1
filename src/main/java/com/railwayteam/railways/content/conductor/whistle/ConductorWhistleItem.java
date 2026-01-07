@@ -273,8 +273,16 @@ public class ConductorWhistleItem extends TrackTargetingBlockItem {
                 }
 
                 int preferredOffset = 1;
-                if (state.getBlock() instanceof TrackBlock trackBlock && trackBlock.getMaterial().trackType == CRTrackMaterials.CRTrackType.WIDE_GAUGE)
-                    preferredOffset = 2;
+                if (state.getBlock() instanceof TrackBlock trackBlock) {
+                    var trackType = trackBlock.getMaterial().trackType;
+                    if (trackType == CRTrackMaterials.CRTrackType.WIDE_GAUGE)
+                        preferredOffset = 2;
+                    else if (trackType == CRTrackMaterials.CRTrackType.NARROW_GAUGE)
+                        preferredOffset = 1;
+                    else
+                        // Standard (and other non-narrow) tracks: place a bit farther out
+                        preferredOffset = 2;
+                }
 
                 Direction successDirection = null;
                 int successOffset = 1;
