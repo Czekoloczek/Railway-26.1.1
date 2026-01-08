@@ -25,11 +25,13 @@ import com.railwayteam.railways.content.conductor.ConductorCapHumanoidLayer;
 import com.railwayteam.railways.content.conductor.ConductorRenderer;
 import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntity;
 import com.railwayteam.railways.content.fuel.tank.FuelTankRenderer;
+import com.railwayteam.railways.content.smokestack.block.renderer.DieselSmokeStackRenderer;
 import com.railwayteam.railways.content.semaphore.SemaphoreRenderer;
 import com.railwayteam.railways.content.switches.TrackSwitchRenderer;
 import com.railwayteam.railways.content.coupling.coupler.TrackCouplerRenderer;
 import com.railwayteam.railways.neoforge.client.track.FullShapeDestroyEffects;
 import com.railwayteam.railways.registry.CRBlockEntities;
+import com.railwayteam.railways.registry.CRBlockPartials;
 import com.railwayteam.railways.registry.CRBlocks;
 import com.railwayteam.railways.registry.CRParticleTypes;
 import com.railwayteam.railways.registry.CREntities;
@@ -65,11 +67,13 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.EntityType;
 
@@ -87,6 +91,7 @@ public class RailwaysClientImpl {
 	public static void init() {
 		RailwaysClient.init();
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onModelLayerRegistration);
+		RailwaysImpl.bus.addListener(RailwaysClientImpl::onModelAdditionalRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onBuiltinPackRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onParticleProviderRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onRendererRegistration);
@@ -94,6 +99,10 @@ public class RailwaysClientImpl {
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onClientExtensionsRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onBlockColorHandlerRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onClientSetup);
+	}
+
+	private static void onModelAdditionalRegistration(ModelEvent.RegisterAdditional event) {
+		CRBlockPartials.registerAdditionalModels(rl -> event.register(ModelResourceLocation.standalone(rl)));
 	}
 
 	private static void onBlockColorHandlerRegistration(RegisterColorHandlersEvent.Block event) {
@@ -142,6 +151,7 @@ public class RailwaysClientImpl {
 		event.registerBlockEntityRenderer(CRBlockEntities.SEMAPHORE.get(), SemaphoreRenderer::new);
 		event.registerBlockEntityRenderer(CRBlockEntities.ANDESITE_SWITCH.get(), TrackSwitchRenderer::new);
 		event.registerBlockEntityRenderer(CRBlockEntities.BRASS_SWITCH.get(), TrackSwitchRenderer::new);
+		event.registerBlockEntityRenderer(CRBlockEntities.DIESEL_SMOKE_STACK.get(), DieselSmokeStackRenderer::new);
 		event.registerBlockEntityRenderer(CRBlockEntitiesImpl.FUEL_TANK.get(), FuelTankRenderer::new);
 		event.registerBlockEntityRenderer(CRBlockEntities.TRACK_COUPLER.get(), TrackCouplerRenderer::new);
 
