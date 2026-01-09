@@ -34,8 +34,7 @@ public class BlocksAndBogiesIncompatibilityScreen extends Screen {
 	private static final Component TITLE = Component.literal("Steam 'n' Rails Neoforge - Incompatibility Detected");
 	private static final Component MESSAGE = Component.literal(
 		"Incompatibility detected: Create: Blocks & Bogies is installed.\n\n" +
-		"This mod is not compatible with Steam 'n' Rails Neoforge. With both installed, you may experience train issues or other crashes.\n\n" +
-		"If you are going to continue, we recommend making backups to avoid data loss.\n\n"
+		"This mod is not compatible with Steam 'n' Rails Neoforge. With both installed, you may experience train issues or other crashes. If you are going to continue, we recommend making backups to avoid data loss.\n\n"
 	);
 
 	public BlocksAndBogiesIncompatibilityScreen(Screen parent) {
@@ -61,9 +60,11 @@ public class BlocksAndBogiesIncompatibilityScreen extends Screen {
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		// Don't render the parent screen; it makes this look double-layered and blurry.
-		// Instead, draw a simple dark background.
-		guiGraphics.fillGradient(0, 0, this.width, this.height, 0xFF101014, 0xFF060608);
+		// Don't render the parent screen; it makes this look double-layered.
+		// Use the vanilla menu background (dirt/options background) instead.
+		this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+		// Darken slightly for text readability.
+		guiGraphics.fillGradient(0, 0, this.width, this.height, 0xA0000000, 0xC0000000);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
 		// Render buttons first to establish the same render state as vanilla UI.
