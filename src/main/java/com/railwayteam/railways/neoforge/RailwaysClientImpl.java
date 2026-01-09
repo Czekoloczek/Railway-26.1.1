@@ -21,6 +21,7 @@ package com.railwayteam.railways.neoforge;
 import com.mojang.brigadier.CommandDispatcher;
 import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.RailwaysClient;
+import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.conductor.ConductorCapHumanoidLayer;
 import com.railwayteam.railways.content.conductor.ConductorRenderer;
 import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntity;
@@ -206,6 +207,8 @@ public class RailwaysClientImpl {
 
 	private static void onClientTickPostWarnBlocksAndBogies(ClientTickEvent.Post event) {
 		if (blocksAndBogiesToastShown)
+			return;
+		if (CRConfigs.client().hideBlocksAndBogiesIncompatibilityWarning.get())
 			return;
 
 		var minecraft = Minecraft.getInstance();

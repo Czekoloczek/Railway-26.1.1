@@ -19,17 +19,26 @@
 package com.railwayteam.railways.neoforge.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.railwayteam.railways.config.CRConfigs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.util.List;
+import java.nio.file.Path;
 
 public class BlocksAndBogiesIncompatibilityScreen extends Screen {
 	private final Screen parent;
+	private boolean dontShowAgain;
+	private VanillaCheckbox dontShowAgainCheckbox;
 
 	private static final Component TITLE = Component.literal("Steam 'n' Rails Neoforge - Incompatibility Detected");
 	private static final Component MESSAGE = Component.literal(
@@ -44,18 +53,142 @@ public class BlocksAndBogiesIncompatibilityScreen extends Screen {
 
 	@Override
 	protected void init() {
-		int buttonWidth = 200;
+		int gap = 10;
 		int buttonHeight = 20;
-		int x = (this.width - buttonWidth) / 2;
-		int y = this.height / 2 + 35;
+		int buttonWidth = Math.min(200, (this.width - 40 - gap) / 2);
+		buttonWidth = Math.max(120, buttonWidth);
 
-		addRenderableWidget(Button.builder(Component.literal("OK"), button -> {
+		int gridWidth = buttonWidth * 2 + gap;
+		int leftX = (this.width - gridWidth) / 2;
+		int rightX = leftX + buttonWidth + gap;
+
+		int titleY = this.height / 2 - 55;
+		List<FormattedCharSequence> lines = this.font.split(MESSAGE, this.width - 40);
+		int textBottomY = titleY + 18 + lines.size() * (this.font.lineHeight + 1);
+		int row1Y = Math.max(this.height / 2 + 25, textBottomY + 12);
+		int row2Y = row1Y + buttonHeight + 6;
+
+		dontShowAgain = CRConfigs.client().hideBlocksAndBogiesIncompatibilityWarning.get();
+		dontShowAgainCheckbox = addRenderableWidget(new VanillaCheckbox(
+			leftX,
+			row1Y,
+			buttonWidth,
+			buttonHeight,
+			Component.literal("Don't show again"),
+			dontShowAgain,
+			selected -> {
+				dontShowAgain = selected;
+				CRConfigs.client().hideBlocksAndBogiesIncompatibilityWarning.set(selected);
+			}
+		));
+
+		addRenderableWidget(Button.builder(Component.literal("Continue"), button -> {
+			persistDontShowAgainIfRequested();
 			Minecraft.getInstance().setScreen(parent);
-		}).bounds(x, y, buttonWidth, buttonHeight).build());
+		}).bounds(rightX, row1Y, buttonWidth, buttonHeight).build());
+
+		addRenderableWidget(Button.builder(Component.literal("Open Mods Folder"), button -> {
+			Path modsDir = FMLPaths.MODSDIR.get();
+			modsDir.toFile().mkdirs();
+			Util.getPlatform().openFile(modsDir.toFile());
+		}).bounds(leftX, row2Y, buttonWidth, buttonHeight).build());
 
 		addRenderableWidget(Button.builder(Component.literal("Quit Game"), button -> {
 			Minecraft.getInstance().stop();
-		}).bounds(x, y + buttonHeight + 6, buttonWidth, buttonHeight).build());
+		}).bounds(rightX, row2Y, buttonWidth, buttonHeight).build());
+	}
+
+	private void persistDontShowAgainIfRequested() {
+		CRConfigs.client().hideBlocksAndBogiesIncompatibilityWarning.set(dontShowAgain);
+	}
+
+	private static class VanillaCheckbox extends AbstractButton {
+		private static final int BOX_SIZE = 18;
+		private boolean selected;
+		private final java.util.function.Consumer<Boolean> onValueChange;
+
+		private VanillaCheckbox(
+			int x,
+			int y,
+			int width,
+			int height,
+			Component message,
+			boolean selected,
+			java.util.function.Consumer<Boolean> onValueChange
+		) {
+			super(x, y, width, height, message);
+			this.selected = selected;
+			this.onValueChange = onValueChange;
+		}
+
+		@Override
+		public void onPress() {
+			selected = !selected;
+			onValueChange.accept(selected);
+		}
+
+		@Override
+		protected void updateWidgetNarration(NarrationElementOutput output) {
+			output.add(NarratedElementType.TITLE, this.getMessage());
+			output.add(NarratedElementType.USAGE, Component.literal("Press to toggle"));
+		}
+
+		@Override
+		protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+			var font = Minecraft.getInstance().font;
+			int x = getX();
+			int y = getY();
+			int boxX = x;
+			int boxY = y + (this.height - BOX_SIZE) / 2;
+			int border = this.isHoveredOrFocused() ? 0xFFFFFFFF : 0xFFB0B0B0;
+			int fill = 0xFF1A1A1A;
+
+			// Box
+			guiGraphics.fill(boxX, boxY, boxX + BOX_SIZE, boxY + BOX_SIZE, border);
+			guiGraphics.fill(boxX + 1, boxY + 1, boxX + BOX_SIZE - 1, boxY + BOX_SIZE - 1, fill);
+
+			// Check mark
+			if (selected) {
+				// Solid checkmark (two thick line segments) so it doesn't look like a thin font glyph.
+				int color = 0xFFFFFFFF;
+				int thickness = 3;
+				// Left leg
+				drawThickLine(guiGraphics, boxX + 4, boxY + 10, boxX + 7, boxY + 13, thickness, color);
+				// Right leg (longer), slightly higher to look more like vanilla
+				drawThickLine(guiGraphics, boxX + 7, boxY + 13, boxX + 14, boxY + 6, thickness, color);
+			}
+
+			// Label
+			int textX = boxX + BOX_SIZE + 6;
+			int textY = y + (this.height - font.lineHeight) / 2;
+			guiGraphics.drawString(font, getMessage(), textX, textY, 0xFFFFFFFF, false);
+		}
+
+		private static void drawThickLine(GuiGraphics g, int x0, int y0, int x1, int y1, int thickness, int color) {
+			int dx = Math.abs(x1 - x0);
+			int dy = Math.abs(y1 - y0);
+			int sx = x0 < x1 ? 1 : -1;
+			int sy = y0 < y1 ? 1 : -1;
+			int err = dx - dy;
+			int half = Math.max(0, thickness / 2);
+
+			int x = x0;
+			int y = y0;
+			while (true) {
+				g.fill(x - half, y - half, x + half + 1, y + half + 1, color);
+				if (x == x1 && y == y1)
+					break;
+				int e2 = 2 * err;
+				if (e2 > -dy) {
+					err -= dy;
+					x += sx;
+				}
+				if (e2 < dx) {
+					err += dx;
+					y += sy;
+				}
+			}
+		}
 	}
 
 	@Override
@@ -88,6 +221,7 @@ public class BlocksAndBogiesIncompatibilityScreen extends Screen {
 
 	@Override
 	public void onClose() {
+		persistDontShowAgainIfRequested();
 		Minecraft.getInstance().setScreen(parent);
 	}
 }
