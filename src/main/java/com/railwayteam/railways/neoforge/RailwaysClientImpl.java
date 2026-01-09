@@ -96,10 +96,8 @@ import java.util.function.Supplier;
 public class RailwaysClientImpl {
 	private static boolean clientGameEventsRegistered = false;
 	private static boolean blocksAndBogiesToastShown = false;
-	private static boolean blocksAndBogiesToastDebugLogged = false;
 
 	public static void init() {
-		Railways.LOGGER.info("RailwaysClientImpl.init() running (client bootstrap)");
 		RailwaysClient.init();
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onModelLayerRegistration);
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onModelAdditionalRegistration);
@@ -184,7 +182,6 @@ public class RailwaysClientImpl {
 			// NOTE: We intentionally do not rely on @EventBusSubscriber scanning here.
 			// This guarantees our client-side hooks run in both dev and packaged environments.
 			NeoForge.EVENT_BUS.addListener(RailwaysClientImpl::onClientTickPostWarnBlocksAndBogies);
-			Railways.LOGGER.info("Registered client tick hook for Blocks & Bogies incompatibility warning");
 		}
 
 		// Flywheel visuals: explicitly register visualizers for Railways bogey block entities.
@@ -218,19 +215,10 @@ public class RailwaysClientImpl {
 			return;
 
 		boolean isCreateBbLoaded = ModList.get().isLoaded("create_bb");
-		if (!blocksAndBogiesToastDebugLogged) {
-			blocksAndBogiesToastDebugLogged = true;
-			Railways.LOGGER.info(
-				"Blocks & Bogies toast check on TitleScreen: isLoaded(create_bb)={} screen={}",
-				isCreateBbLoaded,
-				minecraft.screen.getClass().getName()
-			);
-		}
 		if (!isCreateBbLoaded)
 			return;
 
 		blocksAndBogiesToastShown = true;
-		Railways.LOGGER.warn("Showing Blocks & Bogies incompatibility screen on TitleScreen");
 		minecraft.setScreen(new BlocksAndBogiesIncompatibilityScreen(minecraft.screen));
 	}
 
