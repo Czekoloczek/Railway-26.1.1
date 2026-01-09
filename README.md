@@ -14,7 +14,7 @@ This repository is an unofficial port of **Create Steam 'n' Rails** for **Neofor
 > **This port is a substitution for _[Create: Steam 'n' Rails](https://github.com/Layers-of-Railways/Railway)_ since the official team skiped version 1.21.1**.
 
 ### Version Support
-This mod will only actively support the **latest version of Create**and **Minecraft 1.21.1 on Neoforge**.
+This mod will only actively support the **latest version of Create** and **Minecraft 1.21.1 on Neoforge**.
 
 
 ## Current development progress:
