@@ -21,6 +21,7 @@ package com.railwayteam.railways.neoforge;
 import com.mojang.brigadier.CommandDispatcher;
 import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.RailwaysClient;
+import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.conductor.ConductorCapHumanoidLayer;
 import com.railwayteam.railways.content.conductor.ConductorRenderer;
 import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntity;
@@ -29,6 +30,7 @@ import com.railwayteam.railways.content.smokestack.block.renderer.DieselSmokeSta
 import com.railwayteam.railways.content.semaphore.SemaphoreRenderer;
 import com.railwayteam.railways.content.switches.TrackSwitchRenderer;
 import com.railwayteam.railways.content.coupling.coupler.TrackCouplerRenderer;
+import com.railwayteam.railways.neoforge.client.BlocksAndBogiesIncompatibilityScreen;
 import com.railwayteam.railways.neoforge.client.track.FullShapeDestroyEffects;
 import com.railwayteam.railways.registry.CRBlockEntities;
 import com.railwayteam.railways.registry.CRBlockPartials;
@@ -69,10 +71,14 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.EntityType;
@@ -88,6 +94,9 @@ import java.util.function.Supplier;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class RailwaysClientImpl {
+	private static boolean clientGameEventsRegistered = false;
+	private static boolean blocksAndBogiesToastShown = false;
+
 	public static void init() {
 		RailwaysClient.init();
 		RailwaysImpl.bus.addListener(RailwaysClientImpl::onModelLayerRegistration);
@@ -168,6 +177,13 @@ public class RailwaysClientImpl {
 	}
 
 	private static void onClientSetup(FMLClientSetupEvent event) {
+		if (!clientGameEventsRegistered) {
+			clientGameEventsRegistered = true;
+			// NOTE: We intentionally do not rely on @EventBusSubscriber scanning here.
+			// This guarantees our client-side hooks run in both dev and packaged environments.
+			NeoForge.EVENT_BUS.addListener(RailwaysClientImpl::onClientTickPostWarnBlocksAndBogies);
+		}
+
 		// Flywheel visuals: explicitly register visualizers for Railways bogey block entities.
 		event.enqueueWork(() -> {
 			var visualizer = new SimpleBlockEntityVisualizer<>(BogeyBlockEntityVisual::new, be -> true);
@@ -184,6 +200,26 @@ public class RailwaysClientImpl {
 			);
 			VisualizerRegistry.setVisualizer(CRBlockEntitiesImpl.PORTABLE_FUEL_INTERFACE.get(), psiVisualizer);
 		});
+	}
+
+	private static void onClientTickPostWarnBlocksAndBogies(ClientTickEvent.Post event) {
+		if (blocksAndBogiesToastShown)
+			return;
+		if (CRConfigs.client().hideBlocksAndBogiesIncompatibilityWarning.get())
+			return;
+
+		var minecraft = Minecraft.getInstance();
+		if (!(minecraft.screen instanceof TitleScreen))
+			return;
+		if (minecraft.screen instanceof BlocksAndBogiesIncompatibilityScreen)
+			return;
+
+		boolean isCreateBbLoaded = ModList.get().isLoaded("create_bb");
+		if (!isCreateBbLoaded)
+			return;
+
+		blocksAndBogiesToastShown = true;
+		minecraft.setScreen(new BlocksAndBogiesIncompatibilityScreen(minecraft.screen));
 	}
 
 	// region -- Client Commands ---
