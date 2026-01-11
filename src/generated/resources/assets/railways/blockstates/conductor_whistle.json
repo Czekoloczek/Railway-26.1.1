@@ -1,7 +1,663 @@
 {
-  "variants": {
-    "": {
-      "model": "railways:block/conductor_whistle/block_pole"
+  "multipart": [
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/block_pole",
+        "y": 270
+      },
+      "when": {
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/block_pole"
+      },
+      "when": {
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/block_pole",
+        "y": 90
+      },
+      "when": {
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/block_pole",
+        "y": 180
+      },
+      "when": {
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_white",
+        "y": 270
+      },
+      "when": {
+        "color": "white",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_white"
+      },
+      "when": {
+        "color": "white",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_white",
+        "y": 90
+      },
+      "when": {
+        "color": "white",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_white",
+        "y": 180
+      },
+      "when": {
+        "color": "white",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_orange",
+        "y": 270
+      },
+      "when": {
+        "color": "orange",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_orange"
+      },
+      "when": {
+        "color": "orange",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_orange",
+        "y": 90
+      },
+      "when": {
+        "color": "orange",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_orange",
+        "y": 180
+      },
+      "when": {
+        "color": "orange",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_magenta",
+        "y": 270
+      },
+      "when": {
+        "color": "magenta",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_magenta"
+      },
+      "when": {
+        "color": "magenta",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_magenta",
+        "y": 90
+      },
+      "when": {
+        "color": "magenta",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_magenta",
+        "y": 180
+      },
+      "when": {
+        "color": "magenta",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_light_blue",
+        "y": 270
+      },
+      "when": {
+        "color": "light_blue",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_light_blue"
+      },
+      "when": {
+        "color": "light_blue",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_light_blue",
+        "y": 90
+      },
+      "when": {
+        "color": "light_blue",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_light_blue",
+        "y": 180
+      },
+      "when": {
+        "color": "light_blue",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_yellow",
+        "y": 270
+      },
+      "when": {
+        "color": "yellow",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_yellow"
+      },
+      "when": {
+        "color": "yellow",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_yellow",
+        "y": 90
+      },
+      "when": {
+        "color": "yellow",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_yellow",
+        "y": 180
+      },
+      "when": {
+        "color": "yellow",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_lime",
+        "y": 270
+      },
+      "when": {
+        "color": "lime",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_lime"
+      },
+      "when": {
+        "color": "lime",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_lime",
+        "y": 90
+      },
+      "when": {
+        "color": "lime",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_lime",
+        "y": 180
+      },
+      "when": {
+        "color": "lime",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_pink",
+        "y": 270
+      },
+      "when": {
+        "color": "pink",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_pink"
+      },
+      "when": {
+        "color": "pink",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_pink",
+        "y": 90
+      },
+      "when": {
+        "color": "pink",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_pink",
+        "y": 180
+      },
+      "when": {
+        "color": "pink",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_gray",
+        "y": 270
+      },
+      "when": {
+        "color": "gray",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_gray"
+      },
+      "when": {
+        "color": "gray",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_gray",
+        "y": 90
+      },
+      "when": {
+        "color": "gray",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_gray",
+        "y": 180
+      },
+      "when": {
+        "color": "gray",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_light_gray",
+        "y": 270
+      },
+      "when": {
+        "color": "light_gray",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_light_gray"
+      },
+      "when": {
+        "color": "light_gray",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_light_gray",
+        "y": 90
+      },
+      "when": {
+        "color": "light_gray",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_light_gray",
+        "y": 180
+      },
+      "when": {
+        "color": "light_gray",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_cyan",
+        "y": 270
+      },
+      "when": {
+        "color": "cyan",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_cyan"
+      },
+      "when": {
+        "color": "cyan",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_cyan",
+        "y": 90
+      },
+      "when": {
+        "color": "cyan",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_cyan",
+        "y": 180
+      },
+      "when": {
+        "color": "cyan",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_purple",
+        "y": 270
+      },
+      "when": {
+        "color": "purple",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_purple"
+      },
+      "when": {
+        "color": "purple",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_purple",
+        "y": 90
+      },
+      "when": {
+        "color": "purple",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_purple",
+        "y": 180
+      },
+      "when": {
+        "color": "purple",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_blue",
+        "y": 270
+      },
+      "when": {
+        "color": "blue",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_blue"
+      },
+      "when": {
+        "color": "blue",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_blue",
+        "y": 90
+      },
+      "when": {
+        "color": "blue",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_blue",
+        "y": 180
+      },
+      "when": {
+        "color": "blue",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_brown",
+        "y": 270
+      },
+      "when": {
+        "color": "brown",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_brown"
+      },
+      "when": {
+        "color": "brown",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_brown",
+        "y": 90
+      },
+      "when": {
+        "color": "brown",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_brown",
+        "y": 180
+      },
+      "when": {
+        "color": "brown",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_green",
+        "y": 270
+      },
+      "when": {
+        "color": "green",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_green"
+      },
+      "when": {
+        "color": "green",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_green",
+        "y": 90
+      },
+      "when": {
+        "color": "green",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_green",
+        "y": 180
+      },
+      "when": {
+        "color": "green",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_red",
+        "y": 270
+      },
+      "when": {
+        "color": "red",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_red"
+      },
+      "when": {
+        "color": "red",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_red",
+        "y": 90
+      },
+      "when": {
+        "color": "red",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_red",
+        "y": 180
+      },
+      "when": {
+        "color": "red",
+        "facing": "west"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_black",
+        "y": 270
+      },
+      "when": {
+        "color": "black",
+        "facing": "north"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_black"
+      },
+      "when": {
+        "color": "black",
+        "facing": "east"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_black",
+        "y": 90
+      },
+      "when": {
+        "color": "black",
+        "facing": "south"
+      }
+    },
+    {
+      "apply": {
+        "model": "railways:block/conductor_whistle/flag_black",
+        "y": 180
+      },
+      "when": {
+        "color": "black",
+        "facing": "west"
+      }
     }
-  }
+  ]
 }

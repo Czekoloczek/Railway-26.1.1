@@ -55,8 +55,12 @@ public class ConductorWhistleFlagBlockEntity extends SmartBlockEntity implements
         return ConductorWhistleItem.SPECIAL_MARKER + this.getBlockPos().toShortString();
     }
 
-    DyeColor getColor() {
+    public DyeColor getColor() {
         return color;
+    }
+
+    public void setColor(DyeColor color) {
+        this.color = color;
     }
 
     @Override
@@ -65,6 +69,7 @@ public class ConductorWhistleFlagBlockEntity extends SmartBlockEntity implements
         if (level.isClientSide)
             return;
 
+        // Force edge point creation and naming on first lazy tick
         if (station.getEdgePoint() == null)
             station.tick();
         if (station.getEdgePoint() != null)

@@ -33,7 +33,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
-@EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 public class ClientEventsForge {
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent.Pre event) {
