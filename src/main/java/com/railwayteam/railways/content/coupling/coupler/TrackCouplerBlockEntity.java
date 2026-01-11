@@ -452,7 +452,12 @@ public class TrackCouplerBlockEntity extends SmartBlockEntity implements Transfo
     private void refreshCouplerActivation(@Nullable TrackCoupler coupler, TrackTargetingBehaviour<TrackCoupler> edgePoint) {
         if (coupler == null || edgePoint == null || level == null || level.isClientSide() || coupler.isActivated())
             return;
-        TrackGraphLocation location = edgePoint.determineGraphLocation();
+        TrackGraphLocation location;
+        try {
+            location = edgePoint.determineGraphLocation();
+        } catch (ClassCastException e) {
+            return;
+        }
         if (location == null || location.graph == null)
             return;
         for (Train train : Create.RAILWAYS.trains.values()) {
