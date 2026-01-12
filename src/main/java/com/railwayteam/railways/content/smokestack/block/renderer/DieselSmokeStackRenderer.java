@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.createmod.catnip.math.AngleHelper;
 
 public class DieselSmokeStackRenderer extends SmartBlockEntityRenderer<DieselSmokeStackBlockEntity> {
     public DieselSmokeStackRenderer(BlockEntityRendererProvider.Context context) {
@@ -44,11 +45,32 @@ public class DieselSmokeStackRenderer extends SmartBlockEntityRenderer<DieselSmo
 
         byteBuffer.light(light);
 
-        byteBuffer.translate(0.5, 0.5, 0.5)
-            .rotateXDegrees(dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0)
-            .rotateZDegrees(dir.getAxis().isVertical() ? 0 : ((int) dir.toYRot()) % 360)
-            .rotateYDegrees((float) be.getFanRotation(be.getRpm(partialTicks)))
-            .translate(-0.5, -0.5, -0.5);
+        float fanAngle = (float) be.getFanRotation(be.getRpm(partialTicks));
+
+        // Orient fan to face each direction using single-axis rotations
+        // Model default: fan faces UP (+Y)
+        byteBuffer.translate(0.5, 0.5, 0.5);
+
+        switch (dir) {
+            case UP -> {} // No rotation needed
+            case DOWN -> byteBuffer.rotateXDegrees(180);
+            case NORTH -> byteBuffer.rotateXDegrees(90);
+            case SOUTH -> byteBuffer.rotateXDegrees(-90);
+            case EAST -> byteBuffer.rotateZDegrees(-90);
+            case WEST -> byteBuffer.rotateZDegrees(90);
+        }
+
+        // Fan spin around facing direction
+        byteBuffer.rotateYDegrees(fanAngle);
+
+        // N/S need Y offset (in local coords) to compensate - local Y becomes world Z after X rotation
+        float yOffset = switch (dir) {
+            case NORTH -> 0.8f;
+            case SOUTH -> 0.8f;
+            default -> 0f;
+        };
+
+        byteBuffer.translate(-0.5, -0.5 + yOffset, -0.5);
 
         byteBuffer.renderInto(ms, buffer.getBuffer(RenderType.cutout()));
     }

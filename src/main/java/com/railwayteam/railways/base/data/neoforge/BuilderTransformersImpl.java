@@ -208,9 +208,24 @@ public class BuilderTransformersImpl {
 
     public static <B extends DieselSmokeStackBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> dieselSmokeStack() {
         return a -> a.blockstate((c, p) -> p.getVariantBuilder(c.get())
-            .forAllStates(state -> ConfiguredModel.builder()
-                .modelFile(p.models().getExistingFile(Railways.asResource("block/smokestack/block_diesel_case")))
-                .build()));
+            .forAllStates(state -> {
+                Direction facing = state.getValue(DieselSmokeStackBlock.FACING);
+                int rotX = 0;
+                int rotY = 0;
+                switch (facing) {
+                    case DOWN -> rotX = 180;
+                    case NORTH -> rotX = 90;
+                    case SOUTH -> { rotX = 90; rotY = 180; }
+                    case EAST -> { rotX = 90; rotY = 90; }
+                    case WEST -> { rotX = 90; rotY = 270; }
+                    default -> {} // UP: no rotation
+                }
+                return ConfiguredModel.builder()
+                    .modelFile(p.models().getExistingFile(Railways.asResource("block/smokestack/block_diesel_case")))
+                    .rotationX(rotX)
+                    .rotationY(rotY)
+                    .build();
+            }));
     }
 
     public static <B extends VentBlock, P> NonNullUnaryOperator<BlockBuilder<B, P>> conductorVent() {
