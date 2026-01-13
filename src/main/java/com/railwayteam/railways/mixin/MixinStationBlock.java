@@ -18,11 +18,13 @@
 
 package com.railwayteam.railways.mixin;
 
+import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.conductor.ConductorEntity;
 import com.railwayteam.railways.mixin_interfaces.ICarriageConductors;
 import com.railwayteam.railways.registry.CRBlocks;
 import com.railwayteam.railways.registry.CREntities;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
 import com.simibubi.create.content.trains.entity.Carriage;
@@ -198,26 +200,51 @@ public abstract class MixinStationBlock {
         }
     }
 
-    @Inject(method = "use", at = @At(value = "RETURN", ordinal = 1), cancellable = true, remap = true)
-    private void deployersAssemble(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit, CallbackInfoReturnable<InteractionResult> cir) {
-        if (!pLevel.isClientSide && pPlayer instanceof DeployerFakePlayer deployerFakePlayer && pLevel.getBlockEntity(pPos) instanceof StationBlockEntity stationBe) {
-            cir.setReturnValue(InteractionResult.CONSUME);
+    @Inject(method = "use", at = @At("HEAD"), cancellable = true, remap = true)
+    private void deployersWithWrench(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit, CallbackInfoReturnable<InteractionResult> cir) {
+        Railways.LOGGER.warn("========== MixinStationBlock.use() CALLED ==========");
+        Railways.LOGGER.warn("Player: {} ({})", pPlayer.getName().getString(), pPlayer.getClass().getSimpleName());
+        Railways.LOGGER.warn("Item in hand: {}", pPlayer.getItemInHand(pHand).getItem());
+        
+        // Only handle deployers
+        if (pPlayer instanceof DeployerFakePlayer deployerFakePlayer) {
+            Railways.LOGGER.warn("DETECTED DEPLOYER FAKE PLAYER!");
+            ItemStack itemInHand = pPlayer.getItemInHand(pHand);
+            
+            if (!AllItems.WRENCH.isIn(itemInHand)) {
+                Railways.LOGGER.warn("Item is NOT a wrench, skipping");
+                return;
+            }
+            
+            Railways.LOGGER.warn("DEPLOYER HAS A WRENCH!");
+            
+            if (!(pLevel.getBlockEntity(pPos) instanceof StationBlockEntity stationBe)) {
+                Railways.LOGGER.warn("No StationBlockEntity at pos");
+                return;
+            }
+            
+            Railways.LOGGER.warn("Processing deployer+wrench interaction!");
+            
             GlobalStation station = stationBe.getStation();
             boolean isAssemblyMode = pState.getValue(StationBlock.ASSEMBLING);
+            
             if (station != null && station.getPresentTrain() == null) {
-                //assemble
+                // Assemble
+                Railways.LOGGER.warn("No train present - attempting assembly");
                 if (stationBe.isAssembling() || stationBe.tryEnterAssemblyMode()) {
-                    //Need to fix blockstate
                     stationBe.assemble(deployerFakePlayer.getUUID());
-                    cir.setReturnValue(InteractionResult.SUCCESS);
-
                     if (isAssemblyMode) {
                         pLevel.setBlock(pPos, pState.setValue(StationBlock.ASSEMBLING, false), 3);
                         stationBe.refreshBlockState();
                     }
+                    Railways.LOGGER.warn("ASSEMBLY SUCCESSFUL!");
+                    cir.setReturnValue(InteractionResult.SUCCESS);
+                    return;
                 }
-                return;
             }
+            
+            // Disassemble
+            Railways.LOGGER.warn("Train present - attempting disassembly");
             BlockState newState = null;
             if (!isAssemblyMode) {
                 newState = pState.setValue(StationBlock.ASSEMBLING, true);
@@ -226,9 +253,9 @@ public abstract class MixinStationBlock {
                 if (newState != null) {
                     pLevel.setBlock(pPos, newState, 3);
                     stationBe.refreshBlockState();
-
                     stationBe.refreshAssemblyInfo();
                 }
+                Railways.LOGGER.warn("DISASSEMBLY SUCCESSFUL!");
                 cir.setReturnValue(InteractionResult.SUCCESS);
             }
         }
