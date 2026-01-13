@@ -43,10 +43,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.JukeboxPlayable;
 import net.minecraft.world.item.JukeboxSong;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.JukeboxBlock;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 
@@ -62,7 +65,9 @@ public class MinecartJukebox extends MinecartBlock {
   }
 
   private static final int COOLDOWN = 100; // ticks
+  private static final int PARTICLE_INTERVAL = 20; // ticks between particle spawns
   private int cooldownCount = 0;
+  private long ticksSinceSongStarted = 0;
 
   private ItemStack disc = ItemStack.EMPTY;
   @OnlyIn(Dist.CLIENT)
@@ -97,6 +102,23 @@ public class MinecartJukebox extends MinecartBlock {
   public void tick () {
     super.tick();
     if (cooldownCount > 0) cooldownCount--;
+
+    if (!disc.isEmpty()) {
+      if (!level().isClientSide && ticksSinceSongStarted % PARTICLE_INTERVAL == 0) {
+        spawnMusicParticles();
+      }
+      ticksSinceSongStarted++;
+    }
+  }
+
+  private void spawnMusicParticles() {
+    if (level() instanceof ServerLevel serverLevel) {
+      double offsetX = (level().getRandom().nextDouble() - 0.5) * 0.5;
+      double offsetZ = (level().getRandom().nextDouble() - 0.5) * 0.5;
+      Vec3 pos = position().add(offsetX, 1.2, offsetZ);
+      float noteColor = (float) level().getRandom().nextInt(4) / 24.0F;
+      serverLevel.sendParticles(ParticleTypes.NOTE, pos.x(), pos.y(), pos.z(), 0, noteColor, 0.0, 0.0, 1.0);
+    }
   }
 
   @Override
@@ -161,6 +183,7 @@ public class MinecartJukebox extends MinecartBlock {
   // Called from both client and server
   public void insertRecord (ItemStack record) {
     this.disc = record.copy();
+    this.ticksSinceSongStarted = 0;
     if (content == null) {
       content = Blocks.JUKEBOX.defaultBlockState();
     }
