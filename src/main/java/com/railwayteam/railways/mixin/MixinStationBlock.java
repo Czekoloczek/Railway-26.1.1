@@ -18,7 +18,6 @@
 
 package com.railwayteam.railways.mixin;
 
-import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.conductor.ConductorEntity;
 import com.railwayteam.railways.mixin_interfaces.ICarriageConductors;
@@ -198,95 +197,5 @@ public abstract class MixinStationBlock {
             if (CRBlocks.CONDUCTOR_WHISTLE_FLAG.isIn(itemInHand))
                 cir.setReturnValue(InteractionResult.PASS);
         }
-    }
-
-    @Inject(method = "use", at = @At("HEAD"), cancellable = true, remap = true)
-    private void deployersWithWrench(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit, CallbackInfoReturnable<InteractionResult> cir) {
-        Railways.LOGGER.warn("========== MixinStationBlock.use() CALLED ==========");
-        Railways.LOGGER.warn("Player: {} ({})", pPlayer.getName().getString(), pPlayer.getClass().getSimpleName());
-        Railways.LOGGER.warn("Item in hand: {}", pPlayer.getItemInHand(pHand).getItem());
-        
-        // Only handle deployers
-        if (pPlayer instanceof DeployerFakePlayer deployerFakePlayer) {
-            Railways.LOGGER.warn("DETECTED DEPLOYER FAKE PLAYER!");
-            ItemStack itemInHand = pPlayer.getItemInHand(pHand);
-            
-            if (!AllItems.WRENCH.isIn(itemInHand)) {
-                Railways.LOGGER.warn("Item is NOT a wrench, skipping");
-                return;
-            }
-            
-            Railways.LOGGER.warn("DEPLOYER HAS A WRENCH!");
-            
-            if (!(pLevel.getBlockEntity(pPos) instanceof StationBlockEntity stationBe)) {
-                Railways.LOGGER.warn("No StationBlockEntity at pos");
-                return;
-            }
-            
-            Railways.LOGGER.warn("Processing deployer+wrench interaction!");
-            
-            GlobalStation station = stationBe.getStation();
-            boolean isAssemblyMode = pState.getValue(StationBlock.ASSEMBLING);
-            
-            if (station != null && station.getPresentTrain() == null) {
-                // Assemble
-                Railways.LOGGER.warn("No train present - attempting assembly");
-                if (stationBe.isAssembling() || stationBe.tryEnterAssemblyMode()) {
-                    stationBe.assemble(deployerFakePlayer.getUUID());
-                    if (isAssemblyMode) {
-                        pLevel.setBlock(pPos, pState.setValue(StationBlock.ASSEMBLING, false), 3);
-                        stationBe.refreshBlockState();
-                    }
-                    Railways.LOGGER.warn("ASSEMBLY SUCCESSFUL!");
-                    cir.setReturnValue(InteractionResult.SUCCESS);
-                    return;
-                }
-            }
-            
-            // Disassemble
-            Railways.LOGGER.warn("Train present - attempting disassembly");
-            BlockState newState = null;
-            if (!isAssemblyMode) {
-                newState = pState.setValue(StationBlock.ASSEMBLING, true);
-            }
-            if (disassembleAndEnterMode(deployerFakePlayer, stationBe)) {
-                if (newState != null) {
-                    pLevel.setBlock(pPos, newState, 3);
-                    stationBe.refreshBlockState();
-                    stationBe.refreshAssemblyInfo();
-                }
-                Railways.LOGGER.warn("DISASSEMBLY SUCCESSFUL!");
-                cir.setReturnValue(InteractionResult.SUCCESS);
-            }
-        }
-    }
-
-    private boolean disassembleAndEnterMode(ServerPlayer sender, StationBlockEntity te) {
-        GlobalStation station = te.getStation();
-        if (station != null) {
-            Train train = station.getPresentTrain();
-            BlockPos trackPosition = te.edgePoint.getGlobalPosition();
-            ItemStack schedule = train == null ? ItemStack.EMPTY : train.runtime.returnSchedule(te.getLevel().registryAccess());
-            if (train != null && !train.disassemble(te.getAssemblyDirection(), trackPosition.above()))
-                return false;
-            dropSchedule(sender, te, schedule);
-        }
-        return te.tryEnterAssemblyMode();
-    }
-
-    private void dropSchedule(ServerPlayer sender, StationBlockEntity te, ItemStack schedule) {
-        if (schedule.isEmpty())
-            return;
-        if (sender.getMainHandItem()
-            .isEmpty()) {
-            sender.getInventory()
-                .placeItemBackInInventory(schedule);
-            return;
-        }
-        Vec3 v = VecHelper.getCenterOf(te.getBlockPos());
-        ItemEntity itemEntity = new ItemEntity(te.getLevel(), v.x, v.y, v.z, schedule);
-        itemEntity.setDeltaMovement(Vec3.ZERO);
-        te.getLevel()
-            .addFreshEntity(itemEntity);
     }
 }
