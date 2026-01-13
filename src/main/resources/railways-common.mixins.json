@@ -121,7 +121,6 @@
     "client.MixinBezierConnection$SegmentAngles",
     "client.MixinBlockElement_Deserializer",
     "client.MixinBogeyBlockEntityRenderer",
-    "client.MixinCarriageContraptionEntity",
     "client.MixinCarriageContraptionEntityRenderer",
     "client.MixinCarriageContraptionInstance",
     "client.MixinCarriageContraptionVisual",
