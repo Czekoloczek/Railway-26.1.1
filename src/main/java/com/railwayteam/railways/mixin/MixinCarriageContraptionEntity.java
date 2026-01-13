@@ -65,7 +65,7 @@ import java.util.Optional;
 import static com.railwayteam.railways.util.BlockPosUtils.normalize;
 
 @Mixin(value = CarriageContraptionEntity.class, remap = false)
-public abstract class MixinCarriageContraptionEntity extends OrientedContraptionEntity implements IDistanceTravelled {
+public abstract class MixinCarriageContraptionEntity extends OrientedContraptionEntity implements IDistanceTravelled, IUpdateCount {
     @Shadow private Carriage carriage;
 
     private MixinCarriageContraptionEntity(EntityType<?> type, Level world) {
@@ -75,6 +75,23 @@ public abstract class MixinCarriageContraptionEntity extends OrientedContraption
     @Unique private boolean railways$fakePlayer = false;
 
     @Unique private double railways$distanceTravelled;
+
+    @Unique private int railways$updateCount = 0;
+
+    @Override
+    public int railways$getUpdateCount() {
+        return railways$updateCount;
+    }
+
+    @Override
+    public void railways$fromParent(IUpdateCount parent) {
+        railways$updateCount = parent.railways$getUpdateCount();
+    }
+
+    @Override
+    public void railways$markUpdate() {
+        railways$updateCount++;
+    }
 
     @Inject(method = "control", at = @At("HEAD"))
     private void recordFakePlayer(BlockPos controlsLocalPos, Collection<Integer> heldControls, Player player, CallbackInfoReturnable<Boolean> cir) {
