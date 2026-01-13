@@ -87,6 +87,7 @@
     "MixinTrainStatus",
     "MixinTravellingPoint",
     "MixinWalkNodeEvaluator",
+    "MixinWrenchItem",
     "NbtUtilsMixin",
     "PlayerEntityMixin",
     "StructureMixin",
