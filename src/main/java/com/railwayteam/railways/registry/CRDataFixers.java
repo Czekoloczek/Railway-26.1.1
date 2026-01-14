@@ -21,6 +21,7 @@ package com.railwayteam.railways.registry;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import com.railwayteam.railways.Railways;
+import com.railwayteam.railways.base.datafixerapi.DataFixesInternals;
 import com.railwayteam.railways.base.datafixers.CompatCherryTrackFix;
 import com.railwayteam.railways.base.datafixers.LocoMetalSmokeboxFacingFix;
 import com.railwayteam.railways.base.datafixers.StreamlinedSmokeStackFacingFix;
@@ -36,8 +37,10 @@ public class CRDataFixers {
     private static final BiFunction<Integer, Schema, Schema> SAME_NAMESPACED = NamespacedSchema::new;
 
     public static void register() {
-        Railways.LOGGER.info("Registering data fixers (temporarily disabled for 1.21 port)");
-        // TODO 1.21: Re-enable DataFixer registration once API changes are finalized
+        Railways.LOGGER.info("Registering data fixers");
+        DataFixerBuilder builder = new DataFixerBuilder(Railways.DATA_FIXER_VERSION);
+        addFixers(builder);
+        DataFixesInternals.get().registerFixer(Railways.DATA_FIXER_VERSION, builder.build().fixer());
     }
 
     private static void addFixers(DataFixerBuilder builder) {
