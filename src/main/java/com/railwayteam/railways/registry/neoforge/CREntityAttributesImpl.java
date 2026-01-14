@@ -20,15 +20,13 @@ package com.railwayteam.railways.registry.neoforge;
 
 import com.railwayteam.railways.content.conductor.ConductorEntity;
 import com.railwayteam.railways.registry.CREntities;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 public class CREntityAttributesImpl {
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
-		// Only register if not already registered by Registrate
-		try {
+		if (!DefaultAttributes.hasSupplier(CREntities.CONDUCTOR.get())) {
 			event.put(CREntities.CONDUCTOR.get(), ConductorEntity.createAttributes().build());
-		} catch (IllegalStateException e) {
-			// Already registered
 		}
 	}
 }
