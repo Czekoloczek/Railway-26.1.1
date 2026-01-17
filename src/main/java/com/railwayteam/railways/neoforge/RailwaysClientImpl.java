@@ -30,7 +30,6 @@ import com.railwayteam.railways.content.smokestack.block.renderer.DieselSmokeSta
 import com.railwayteam.railways.content.semaphore.SemaphoreRenderer;
 import com.railwayteam.railways.content.switches.TrackSwitchRenderer;
 import com.railwayteam.railways.content.coupling.coupler.TrackCouplerRenderer;
-import com.railwayteam.railways.neoforge.client.BlocksAndBogiesIncompatibilityScreen;
 import com.railwayteam.railways.neoforge.client.track.FullShapeDestroyEffects;
 import com.railwayteam.railways.registry.CRBlockEntities;
 import com.railwayteam.railways.registry.CRBlockPartials;
@@ -211,15 +210,13 @@ public class RailwaysClientImpl {
 		var minecraft = Minecraft.getInstance();
 		if (!(minecraft.screen instanceof TitleScreen))
 			return;
-		if (minecraft.screen instanceof BlocksAndBogiesIncompatibilityScreen)
-			return;
 
 		boolean isCreateBbLoaded = ModList.get().isLoaded("create_bb");
 		if (!isCreateBbLoaded)
 			return;
 
 		blocksAndBogiesToastShown = true;
-		minecraft.setScreen(new BlocksAndBogiesIncompatibilityScreen(minecraft.screen));
+		Railways.LOGGER.warn("Create: Blocks & Bogies detected, but incompatibility screen has been removed by the user.");
 	}
 
 	// region -- Client Commands ---

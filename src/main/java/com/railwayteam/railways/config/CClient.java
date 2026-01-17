@@ -37,7 +37,7 @@ public class CClient extends ConfigBase {
     public final ConfigBool renderNormalCap = b(true, "renderNormalCap", Comments.renderNormalCap);
     public final ConfigBool animatedFlywheels = b(true, "animatedFlywheels", Comments.animatedFlywheels);
     public final ConfigFloat flywheelSpeedMultiplier = f(0.5f, 0.0f, 1.0f, "flywheelSpeedMultiplier", Comments.flywheelSpeedMultiplier);
-	public final ConfigBool hideBlocksAndBogiesIncompatibilityWarning = b(false, "hideBlocksAndBogiesIncompatibilityWarning", Comments.hideBlocksAndBogiesIncompatibilityWarning);
+	public final ConfigBool hideBlocksAndBogiesIncompatibilityWarning = b(true, "hideBlocksAndBogiesIncompatibilityWarning", Comments.hideBlocksAndBogiesIncompatibilityWarning);
 
     // smoke
     public final ConfigGroup smoke = group(1, "smoke", Comments.smoke);
