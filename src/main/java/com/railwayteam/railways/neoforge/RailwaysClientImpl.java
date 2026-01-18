@@ -94,7 +94,6 @@ import java.util.function.Supplier;
 @EventBusSubscriber(Dist.CLIENT)
 public class RailwaysClientImpl {
 	private static boolean clientGameEventsRegistered = false;
-	private static boolean blocksAndBogiesToastShown = false;
 
 	public static void init() {
 		RailwaysClient.init();
@@ -180,7 +179,6 @@ public class RailwaysClientImpl {
 			clientGameEventsRegistered = true;
 			// NOTE: We intentionally do not rely on @EventBusSubscriber scanning here.
 			// This guarantees our client-side hooks run in both dev and packaged environments.
-			NeoForge.EVENT_BUS.addListener(RailwaysClientImpl::onClientTickPostWarnBlocksAndBogies);
 		}
 
 		// Flywheel visuals: explicitly register visualizers for Railways bogey block entities.
@@ -199,24 +197,6 @@ public class RailwaysClientImpl {
 			);
 			VisualizerRegistry.setVisualizer(CRBlockEntitiesImpl.PORTABLE_FUEL_INTERFACE.get(), psiVisualizer);
 		});
-	}
-
-	private static void onClientTickPostWarnBlocksAndBogies(ClientTickEvent.Post event) {
-		if (blocksAndBogiesToastShown)
-			return;
-		if (CRConfigs.client().hideBlocksAndBogiesIncompatibilityWarning.get())
-			return;
-
-		var minecraft = Minecraft.getInstance();
-		if (!(minecraft.screen instanceof TitleScreen))
-			return;
-
-		boolean isCreateBbLoaded = ModList.get().isLoaded("create_bb");
-		if (!isCreateBbLoaded)
-			return;
-
-		blocksAndBogiesToastShown = true;
-		Railways.LOGGER.warn("Create: Blocks & Bogies detected, but incompatibility screen has been removed by the user.");
 	}
 
 	// region -- Client Commands ---
