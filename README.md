@@ -26,8 +26,6 @@ This mod will only actively support the **latest version of Create** and **Minec
  
 ### Releases
 
-A **Pre-release Version** is now available for download!
-
 You can download it here: [Modrinth](https://modrinth.com/mod/create-steam-n-rails-1.21.1) [CurseForge](https://curseforge.com/minecraft/mc-mods/steam-n-rails-neoforge)
 
 ## Credits
