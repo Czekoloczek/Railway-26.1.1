@@ -51,11 +51,16 @@ public abstract class DataFixesInternals {
 
     public static @NotNull DataFixesInternals get() {
         if (instance == null) {
-            Schema latestVanillaSchema;
+            Schema latestVanillaSchema = null;
             try {
-                latestVanillaSchema = DataFixers.getDataFixer()
+                var dataFixer = DataFixers.getDataFixer();
+                if (dataFixer == null) {
+                    throw new IllegalStateException("DataFixer has not been initialized");
+                }
+                latestVanillaSchema = dataFixer
                     .getSchema(DataFixUtils.makeKey(SharedConstants.getCurrentVersion().getDataVersion().getVersion()));
             } catch (Exception e) {
+                Railways.LOGGER.warn("[Railways DFU] Failed to initialize! Exception occurred:", e);
                 latestVanillaSchema = null;
             }
 

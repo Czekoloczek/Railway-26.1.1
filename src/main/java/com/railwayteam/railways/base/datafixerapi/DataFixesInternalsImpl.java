@@ -56,6 +56,9 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
 
     @Override
     public @NotNull Schema createBaseSchema() {
+        if (this.latestVanillaSchema == null) {
+            throw new IllegalStateException("Latest vanilla schema is not initialized - DataFixer failed to initialize properly");
+        }
         return new Schema(0, this.latestVanillaSchema);
     }
 
