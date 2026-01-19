@@ -17,5 +17,11 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "railways:blocks/track_biomesoplenty_magic"
+  "random_sequence": "railways:blocks/track_biomesoplenty_magic",
+  "conditions": [
+    {
+      "condition": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ]
 }

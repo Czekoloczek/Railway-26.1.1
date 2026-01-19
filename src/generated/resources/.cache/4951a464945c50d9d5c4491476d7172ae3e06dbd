@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-08T21:03:07.6454635	Registrate Provider for railways [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.21.1	2026-01-18T15:16:33.4403452	Registrate Provider for railways [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 8c558c7bddce85565a267985153b6dd6857ed523 assets/railways/blockstates/big_buffer.json
 b9ca199a3d4ae83cc751d18bdc5b8f19c58dff4c assets/railways/blockstates/black_brass_wrapped_locometal.json
 8653619c96cb2a4e1e0795c2c2f790bb0b5497d1 assets/railways/blockstates/black_brass_wrapped_locometal_boiler.json
@@ -249,7 +249,7 @@ ba18538ac01b91a95c89db5bfb043b01c7b65781 assets/railways/blockstates/slashed_loc
 969dc7bf8a6a65e1738f396dcb51f6327445663e assets/railways/blockstates/small_buffer.json
 c4b5ee1179b0bafb59be955e28ca84276a1d2505 assets/railways/blockstates/smokestack_caboosestyle.json
 48ee90562578b9df991b2eb68729831b0f9bfeef assets/railways/blockstates/smokestack_coalburner.json
-bebc95565cbc1881b5e1285271a15b5efc820c7b assets/railways/blockstates/smokestack_diesel.json
+03786503d7bd446e1da0d80eb6b130ce6e8cd86b assets/railways/blockstates/smokestack_diesel.json
 ebc60c6a5c4d62ad1913ae9ce0c061b24a52126d assets/railways/blockstates/smokestack_long.json
 29d174ccfad352a574ebc5d4dcd0e921adc2fc4f assets/railways/blockstates/smokestack_oilburner.json
 c82fc3c14eb7ed812cc8ee56db0a434c1911e906 assets/railways/blockstates/smokestack_streamlined.json
@@ -614,8 +614,8 @@ a7799b7c4f35668a1cc21bf8d07c21a8ff3b750d assets/railways/blockstates/yellow_loco
 8f065345eaf577d99903192b2586d5785ab2bc92 assets/railways/blockstates/yellow_plated_locometal.json
 ff0fe33742518fcf1400289f845a9246ce7fb4d3 assets/railways/blockstates/yellow_riveted_locometal.json
 3a17651cb828f99aee46dc3a566a64bc6611b053 assets/railways/blockstates/yellow_slashed_locometal.json
-497b14f4133f61a0c4349e1e936806248ebb15fb assets/railways/lang/en_ud.json
-237c55b86b46cf8755d54b905b079525c8d42af8 assets/railways/lang/en_us.json
+2bd3b39ed79e1e31d937a4710338c71b0d56bf64 assets/railways/lang/en_ud.json
+e683f3836c9b869dac0c2d9b977db012a88e41c2 assets/railways/lang/en_us.json
 85ca4109f93c3378b2801b583af0190a3d60db0b assets/railways/models/block/black_brass_wrapped_locometal.json
 d8ccc74a6f224405e9e0138e99efd3155a2c8949 assets/railways/models/block/black_brass_wrapped_locometal_boiler_gullet_x.json
 a3a2aae127343d2fe8e27f612bae1aa96997df57 assets/railways/models/block/black_brass_wrapped_locometal_boiler_gullet_x_raised.json

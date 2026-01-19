@@ -86,11 +86,7 @@ public class GenericTrackCompat {
     public void register(String... names) {
         for (String name : names) {
             Optional<Block> baseBlock = BuiltInRegistries.BLOCK.getOptional(getSlabLocation(name));
-            if (baseBlock.isEmpty()) {
-                if (!shouldRegisterMissing()) continue; // skip if we shouldn't register tracks for missing base blocks
-                if (isDataGen() || Utils.isDevEnv())
-                    Railways.LOGGER.error("Failed to locate base block at {} for {}", getSlabLocation(name), asResource(name));
-            }
+
             // standard gauge
             TrackMaterial standardMaterial = buildCompatModels(this, make(asResource(name))
                 .lang(langName(name))
@@ -115,7 +111,7 @@ public class GenericTrackCompat {
             CRTrackMaterials.WIDE_GAUGE.put(standardMaterial, wideMaterial);
             CRTrackMaterials.WIDE_GAUGE_REVERSE.put(wideMaterial, standardMaterial);
 
-            NonNullSupplier<TrackBlock> wideBlock = makeTrack(wideMaterial, WideGaugeCompatTrackBlockStateGenerator.create()::generate);
+            NonNullSupplier<TrackBlock> wideBlock = makeTrack(wideMaterial, WideGaugeCompatTrackBlockStateGenerator.create()::generate, (t) -> {}, (p) -> p);
             CRBlocks.WIDE_GAUGE_TRACKS.put(wideMaterial, wideBlock);
             BLOCKS.put(name+"_wide", wideBlock);
 
@@ -130,7 +126,7 @@ public class GenericTrackCompat {
             CRTrackMaterials.NARROW_GAUGE.put(standardMaterial, narrowMaterial);
             CRTrackMaterials.NARROW_GAUGE_REVERSE.put(narrowMaterial, standardMaterial);
 
-            NonNullSupplier<TrackBlock> narrowBlock = makeTrack(narrowMaterial, NarrowGaugeCompatTrackBlockStateGenerator.create()::generate);
+            NonNullSupplier<TrackBlock> narrowBlock = makeTrack(narrowMaterial, NarrowGaugeCompatTrackBlockStateGenerator.create()::generate, (t) -> {}, (p) -> p);
             CRBlocks.NARROW_GAUGE_TRACKS.put(narrowMaterial, narrowBlock);
             BLOCKS.put(name+"_narrow", narrowBlock);
 

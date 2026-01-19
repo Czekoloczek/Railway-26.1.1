@@ -84,10 +84,6 @@ public abstract class TrackCompatUtils {
         return makeTrack(material, CompatTrackBlockStateGenerator.create()::generate);
     }
 
-    public static BlockEntry<TrackBlock> makeTrack(TrackMaterial material, boolean hideInCreativeTabs) {
-        return makeTrack(material, CompatTrackBlockStateGenerator.create()::generate, (t) -> {}, (p) -> p, hideInCreativeTabs);
-    }
-
     public static BlockEntry<TrackBlock> makeTrack(TrackMaterial material, NonNullBiConsumer<DataGenContext<Block, TrackBlock>, RegistrateBlockstateProvider> blockstateGen) {
         return makeTrack(material, blockstateGen, (t) -> {});
     }
@@ -101,10 +97,6 @@ public abstract class TrackCompatUtils {
     }
 
     public static BlockEntry<TrackBlock> makeTrack(TrackMaterial material, NonNullBiConsumer<DataGenContext<Block, TrackBlock>, RegistrateBlockstateProvider> blockstateGen, NonNullConsumer<? super TrackBlock> onRegister, Function<BlockBehaviour.Properties, BlockBehaviour.Properties> collectProperties) {
-        return makeTrack(material, blockstateGen, onRegister, collectProperties, false);
-    }
-
-    public static BlockEntry<TrackBlock> makeTrack(TrackMaterial material, NonNullBiConsumer<DataGenContext<Block, TrackBlock>, RegistrateBlockstateProvider> blockstateGen, NonNullConsumer<? super TrackBlock> onRegister, Function<BlockBehaviour.Properties, BlockBehaviour.Properties> collectProperties, boolean hideInCreativeTabs) {
         String owningMod = material.id.getNamespace();
         String name = "track_" + owningMod + "_" + material.resourceName();
 
@@ -128,7 +120,7 @@ public abstract class TrackCompatUtils {
             .onRegister(CreateRegistrate.blockModel(() -> TrackModel::new))
             .onRegister(CRTrackMaterials::addToBlockEntityType)
             .item(TrackBlockItem::new)
-            .removeTab(hideInCreativeTabs ? null : CreativeModeTabs.SEARCH)
+            .removeTab(null)
             .model((c, p) -> p.generated(c, ResourceLocation.fromNamespaceAndPath(owningMod, "item/track/track_"+material.resourceName())))
             .build()
             .register();

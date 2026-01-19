@@ -64,5 +64,8 @@ public class DataGenerators {
         });
         
         generator.addProvider(runServer, new RailwaysHatOffsetGenerator(packOutput, lookupProvider));
+        
+        // Add the compat track loot table post-processor
+        generator.addProvider(runServer, new CompatTrackLootTableProvider(packOutput, lookupProvider));
     }
 }
