@@ -36,10 +36,12 @@ public class SpriteCopyingBakedModel implements BakedModel {
 
   protected final BakedModel baseModel;
   protected final BakedModel spriteSourceModel;
+  protected final BlockState spriteSourceState;
 
-  public SpriteCopyingBakedModel(BakedModel baseModel, BakedModel spriteSourceModel) {
+  public SpriteCopyingBakedModel(BakedModel baseModel, BakedModel spriteSourceModel, BlockState spriteSourceState) {
     this.baseModel = baseModel;
     this.spriteSourceModel = spriteSourceModel;
+    this.spriteSourceState = spriteSourceState;
   }
 
   @Override
@@ -47,13 +49,12 @@ public class SpriteCopyingBakedModel implements BakedModel {
     ArrayList<BakedQuad> quads = new ArrayList<>();
     TextureAtlasSprite overrideSprite = spriteSourceModel.getParticleIcon();
     BakedQuad overrideQuad = null;
-    List<BakedQuad> sourceQuads = spriteSourceModel.getQuads(pState, pSide, pRand);
+    List<BakedQuad> sourceQuads = spriteSourceModel.getQuads(spriteSourceState, pSide, pRand);
     if (!sourceQuads.isEmpty()) {
       overrideSprite = sourceQuads.get(0).getSprite();
       overrideQuad = sourceQuads.get(0);
-      //Railways.LOGGER.warn("Overridesprite: "+ overrideSprite.toString());
     } else if (pSide != null) {
-      List<BakedQuad> nullQuads = spriteSourceModel.getQuads(pState, null, pRand);
+      List<BakedQuad> nullQuads = spriteSourceModel.getQuads(spriteSourceState, null, pRand);
       if (!nullQuads.isEmpty()) {
         overrideSprite = nullQuads.get(0).getSprite();
         overrideQuad = nullQuads.get(0);
