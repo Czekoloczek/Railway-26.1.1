@@ -68,8 +68,9 @@ public abstract class CasingRenderUtils {
     public static PartialModel reTexture(PartialModel model, SlabBlock block) {
         Pair<PartialModel, SlabBlock> key = Pair.of(model, block);
         if (!reTexturedModels.containsKey(key)) {
-            BakedModel slabModel = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(block.defaultBlockState());
-            BakedModel texturedCasing = new SpriteCopyingBakedModel(model.get(), slabModel);
+            BlockState slabState = block.defaultBlockState();
+            BakedModel slabModel = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(slabState);
+            BakedModel texturedCasing = new SpriteCopyingBakedModel(model.get(), slabModel, slabState);
             PartialModel texturedPartial = RuntimeFakePartialModel.make(Railways.asResource("runtime_casing"), texturedCasing);
             reTexturedModels.put(key, texturedPartial);
             return texturedPartial;
