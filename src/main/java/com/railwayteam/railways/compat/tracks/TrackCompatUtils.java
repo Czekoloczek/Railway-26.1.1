@@ -66,7 +66,7 @@ public abstract class TrackCompatUtils {
     );
 
     public static boolean anyLoaded() {
-        if (GenericTrackCompat.isDataGen() || CRConfigs.common().registerMissingTracks.get())
+        if (GenericTrackCompat.isDataGen() || CRConfigs.getRegisterMissingTracks())
             return true;
         for (String mod : TRACK_COMPAT_MODS) {
             if (Mods.valueOf(mod.toUpperCase(Locale.ROOT)).isLoaded)
