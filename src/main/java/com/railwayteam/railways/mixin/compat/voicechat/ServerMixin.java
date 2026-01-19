@@ -27,7 +27,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Slice;
 
 import java.util.UUID;
 
@@ -43,10 +42,7 @@ public class ServerMixin {
         }
     }
 
-    @WrapOperation(method = "processProximityPacket", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getUUID()Ljava/util/UUID;"),
-        slice = @Slice(
-            from = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;isCrouching()Z")
-        ))
+    @WrapOperation(method = "processProximityPacket", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;getUUID()Ljava/util/UUID;"))
     private UUID useConductorSpyUUID(ServerPlayer instance, Operation<UUID> original) {
         if (ConductorPossessionController.isPossessingConductor(instance)) {
             return instance.getCamera().getUUID();
