@@ -577,12 +577,12 @@ public class CRBlocks {
     woodburner
      */
     public static final BlockEntry<SmokeStackBlock>
-        CABOOSESTYLE_STACK = makeSmokeStack("caboosestyle", new SmokeStackBlock.SmokeStackType(0.5, 10 / 16.0d, 0.5), "Caboose Smokestack", RotationType.AXIS, ShapeWrapper.wrapped(CRShapes.CABOOSE_STACK), false, true),
-        LONG_STACK = makeSmokeStack("long", new SmokeStackBlock.SmokeStackType(0.5, 10 / 16.0d, 0.5), "Double Smokestack", RotationType.AXIS, ShapeWrapper.wrapped(CRShapes.LONG_STACK), true, true),
-        COALBURNER_STACK = makeSmokeStack("coalburner", new SmokeStackBlock.SmokeStackType(0.5, 1.0, 0.5), "Coalburner Smokestack", CRShapes.COAL_STACK, true),
-        OILBURNER_STACK = makeSmokeStack("oilburner", new SmokeStackBlock.SmokeStackType(new Vec3(0.5, 0.4, 0.5), new Vec3(0.2, 0.2, 0.2)), "Oilburner Smokestack", RotationType.NONE, ShapeWrapper.wrapped(CRShapes.OIL_STACK), true, true),
-        STREAMLINED_STACK = makeSmokeStack("streamlined", new SmokeStackBlock.SmokeStackType(new Vec3(0.5, 0.2, 0.5), new Vec3(0.25, 0.2, 0.25)), "Streamlined Smokestack", RotationType.FACING, ShapeWrapper.wrapped(CRShapes.STREAMLINED_STACK), true, true),
-        WOODBURNER_STACK = makeSmokeStack("woodburner", new SmokeStackBlock.SmokeStackType(0.5, 12 / 16.0d, 0.5), "Woodburner Smokestack", CRShapes.WOOD_STACK, true);
+        CABOOSESTYLE_STACK = makeSmokeStack("caboosestyle", new SmokeStackBlock.SmokeStackType(0.5, 0.5, 0.5), "Caboose Smokestack", RotationType.AXIS, ShapeWrapper.wrapped(CRShapes.CABOOSE_STACK), false, true),
+        LONG_STACK = makeSmokeStack("long", new SmokeStackBlock.SmokeStackType(0.5, 0.45, 0.5), "Double Smokestack", RotationType.AXIS, ShapeWrapper.wrapped(CRShapes.LONG_STACK), true, true),
+        COALBURNER_STACK = makeSmokeStack("coalburner", new SmokeStackBlock.SmokeStackType(0.5, 1.5, 0.5), "Coalburner Smokestack", CRShapes.COAL_STACK, true),
+        OILBURNER_STACK = makeSmokeStack("oilburner", new SmokeStackBlock.SmokeStackType(new Vec3(0.5, 0.9, 0.5), new Vec3(0.2, 0.2, 0.2)), "Oilburner Smokestack", RotationType.NONE, ShapeWrapper.wrapped(CRShapes.OIL_STACK), true, true),
+        STREAMLINED_STACK = makeSmokeStack("streamlined", new SmokeStackBlock.SmokeStackType(new Vec3(0.5, 0.3, 0.5), new Vec3(0.25, 0.2, 0.25)), "Streamlined Smokestack", RotationType.FACING, ShapeWrapper.wrapped(CRShapes.STREAMLINED_STACK), true, true),
+        WOODBURNER_STACK = makeSmokeStack("woodburner", new SmokeStackBlock.SmokeStackType(0.5, 0.4, 0.5), "Woodburner Smokestack", CRShapes.WOOD_STACK, true);
 
     public static final BlockEntry<DieselSmokeStackBlock> DIESEL_STACK = REGISTRATE.block("smokestack_diesel", p -> new DieselSmokeStackBlock(p, ShapeWrapper.wrapped(CRShapes.DIESEL_STACK)))
         .initialProperties(SharedProperties::softMetal)
