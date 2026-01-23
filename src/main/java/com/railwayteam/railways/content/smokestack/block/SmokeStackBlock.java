@@ -144,7 +144,7 @@ public class SmokeStackBlock extends AbstractSmokeStackBlock<SmokeStackBlockEnti
                 }
                 level.addAlwaysVisibleParticle(particleType, true,
                     pos.x() + spawnOffset.x + random.nextDouble() * spawnDelta.x * (random.nextDouble() * 2 - 1),
-                    pos.y() + random.nextDouble() * spawnDelta.y + spawnOffset.y + 0.5,
+                    pos.y() + random.nextDouble() * spawnDelta.y + spawnOffset.y,
                     pos.z() + spawnOffset.z + random.nextDouble() * spawnDelta.z * (random.nextDouble() * 2 - 1),
                     0.0D, 0.07D * speedMultiplier * (stationary ? 25 : 1), 0.0D);
             }
@@ -159,7 +159,7 @@ public class SmokeStackBlock extends AbstractSmokeStackBlock<SmokeStackBlockEnti
                 }
                 level.addAlwaysVisibleParticle(particleType, true,
                     pos.x() + spawnOffset.x + random.nextDouble() * spawnDelta.x * (random.nextDouble() * 2 - 1),
-                    pos.y() + random.nextDouble() * spawnDelta.y + spawnOffset.y + 0.5,
+                    pos.y() + random.nextDouble() * spawnDelta.y + spawnOffset.y,
                     pos.z() + spawnOffset.z + random.nextDouble() * spawnDelta.z * (random.nextDouble() * 2 - 1),
                     0.0D, Mth.equal(speedMultiplier, -1) ? PuffSmokeParticle.DOUBLE_SPEED_SENTINEL : 2.1, 0.0D);
             }
