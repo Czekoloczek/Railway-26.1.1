@@ -36,6 +36,8 @@ class FlywheelActorVisual extends ActorVisual {
 	private boolean hasLastEntityPos;
 	private double lastEntityX;
 	private double lastEntityZ;
+	private double lastDx;
+	private double lastDz;
 
 	FlywheelActorVisual(VisualizationContext visualizationContext, VirtualRenderWorld simulationWorld, MovementContext context) {
 		super(visualizationContext, simulationWorld, context);
@@ -120,6 +122,13 @@ class FlywheelActorVisual extends ActorVisual {
 			return 0;
 
 		double rpm = (trainSpeed / circumference) * 1200.0;
+
+		if (axis == Direction.Axis.X) {
+			if (lastDz < 0) rpm = -rpm;
+		} else {
+			if (lastDx > 0) rpm = -rpm;
+		}
+
 		if (carriageContraptionEntity.movingBackwards)
 			rpm = -rpm;
 		if (!Double.isFinite(rpm))
@@ -141,12 +150,12 @@ class FlywheelActorVisual extends ActorVisual {
 			return 0;
 		}
 
-		double dx = x - lastEntityX;
-		double dz = z - lastEntityZ;
+		lastDx = x - lastEntityX;
+		lastDz = z - lastEntityZ;
 		lastEntityX = x;
 		lastEntityZ = z;
 
-		return Math.sqrt(dx * dx + dz * dz) / deltaTicks;
+		return Math.sqrt(lastDx * lastDx + lastDz * lastDz) / deltaTicks;
 	}
 
 	private void applyWheelAngle(float angleDegrees) {
