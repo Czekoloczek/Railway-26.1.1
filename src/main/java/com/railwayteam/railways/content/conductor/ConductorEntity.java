@@ -540,6 +540,8 @@ public class ConductorEntity extends AbstractGolem {
 
     //can't use ServerPlayer#setCamera here because it also teleports the player
     ((com.railwayteam.railways.mixin.conductor_possession.ServerPlayerAccessor) player).setCamera(this);
+    // Also track possession separately since vanilla camera field gets reset
+    ((ServerPlayerPossessionAccess) player).railways$setPossessedConductor(this);
     CRPackets.PACKETS.sendTo(player, new SetCameraViewPacket(this));
     resetPosition();
     // update ConductorPossessionController.setRenderPosition in #tick
@@ -549,6 +551,8 @@ public class ConductorEntity extends AbstractGolem {
   public void stopViewing(ServerPlayer player) {
     if (!level().isClientSide) {
       currentlyViewing.clear();
+      // Clear possession tracking
+      ((ServerPlayerPossessionAccess) player).railways$setPossessedConductor(null);
       ((com.railwayteam.railways.mixin.conductor_possession.ServerPlayerAccessor) player).setCamera(player);
       CRPackets.PACKETS.sendTo(player, new SetCameraViewPacket(player));
       RECENTLY_DISMOUNTED_PLAYERS.add(player);
@@ -557,11 +561,13 @@ public class ConductorEntity extends AbstractGolem {
 
   @SuppressWarnings("DuplicatedCode")
   public void onSpyInteract(BlockPos pos) {
-    BlockState state;
-    if (this.canReach(pos) && canSpyInteract((state = this.level().getBlockState(pos))) && fakePlayer != null) {
+    BlockState state = this.level().getBlockState(pos);
+
+    if (this.canReach(pos) && canSpyInteract(state) && fakePlayer != null) {
       ClipContext context = new ClipContext(this.getEyePosition(), new Vec3(pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5),
               ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, fakePlayer);
       BlockHitResult hitResult = this.level().clip(context);
+
       if (!pos.equals(hitResult.getBlockPos()))
         return;
       boolean canUse = state.getShape(this.level(), pos).isEmpty() || EntityUtils.handleUseEvent(fakePlayer, InteractionHand.MAIN_HAND, hitResult);

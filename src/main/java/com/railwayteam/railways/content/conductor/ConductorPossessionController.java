@@ -38,6 +38,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.ApiStatus;
@@ -254,9 +255,11 @@ public class ConductorPossessionController {
                         wasUsingBefore = true;
                         HitResult hitresult = mc.hitResult;
                         if (hitresult != null && hitresult.getType() == HitResult.Type.BLOCK && mc.level != null
-                                && hitresult instanceof BlockHitResult blockHitResult
-                                && ConductorEntity.canSpyInteract(mc.level.getBlockState(blockHitResult.getBlockPos()))) {
-                            CRPackets.PACKETS.send(new SpyConductorInteractPacket(blockHitResult.getBlockPos()));
+                                && hitresult instanceof BlockHitResult blockHitResult) {
+                            BlockState lookingAt = mc.level.getBlockState(blockHitResult.getBlockPos());
+                            if (ConductorEntity.canSpyInteract(lookingAt)) {
+                                CRPackets.PACKETS.send(new SpyConductorInteractPacket(blockHitResult.getBlockPos()));
+                            }
                         }
                     }
                 } else {
@@ -313,8 +316,11 @@ public class ConductorPossessionController {
 
         if (player.level().isClientSide)
             return ClientHandler.isPlayerMountedOnCamera();
-        else
-            return ((ServerPlayer) player).getCamera() instanceof ConductorEntity;
+        else {
+            // Use our custom possession tracking instead of vanilla camera field (which gets reset)
+            ConductorEntity possessed = ((ServerPlayerPossessionAccess) player).railways$getPossessedConductor();
+            return possessed != null;
+        }
     }
 
     @Nullable
@@ -324,8 +330,10 @@ public class ConductorPossessionController {
 
         if (player.level().isClientSide)
             return ClientHandler.getPlayerMountedOnCamera();
-        else
-            return ((ServerPlayer) player).getCamera() instanceof ConductorEntity ce ? ce : null;
+        else {
+            // Use our custom possession tracking instead of vanilla camera field (which gets reset)
+            return ((ServerPlayerPossessionAccess) player).railways$getPossessedConductor();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
