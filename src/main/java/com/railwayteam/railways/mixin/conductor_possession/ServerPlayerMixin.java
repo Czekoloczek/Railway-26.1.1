@@ -20,6 +20,7 @@ package com.railwayteam.railways.mixin.conductor_possession;
 
 import com.railwayteam.railways.content.conductor.ConductorEntity;
 import com.railwayteam.railways.content.conductor.ConductorPossessionController;
+import com.railwayteam.railways.content.conductor.ServerPlayerPossessionAccess;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Makes sure the server does not move the player viewing a camera to the camera's position
@@ -40,8 +40,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * entirely, we let it proceed but intercept absMoveTo to prevent position sync.
  */
 @Mixin(value = ServerPlayer.class, priority = 1200)
-public abstract class ServerPlayerMixin {
+public abstract class ServerPlayerMixin implements ServerPlayerPossessionAccess {
 	@Shadow public abstract Entity getCamera();
+
+	// Track possession state separately since camera field gets reset
+	@org.spongepowered.asm.mixin.Unique
+	private ConductorEntity railways$possessedConductor = null;
+
+	@org.spongepowered.asm.mixin.Unique
+	public ConductorEntity railways$getPossessedConductor() {
+		return railways$possessedConductor;
+	}
+
+	@org.spongepowered.asm.mixin.Unique
+	public void railways$setPossessedConductor(ConductorEntity conductor) {
+		this.railways$possessedConductor = conductor;
+	}
 
 	/**
 	 * Redirect the isAlive() call on the camera entity to return false if the camera is null
@@ -69,11 +83,19 @@ public abstract class ServerPlayerMixin {
 	}
 
 	/**
-	 * Still prevent setting camera to ConductorEntity through normal means,
-	 * but we handle the direct field access elsewhere.
+	 * Prevent setting camera to ConductorEntity through normal means,
+	 * AND prevent resetting camera away from ConductorEntity (e.g., when vanilla thinks it's "dead").
+	 * We handle the direct field access via ServerPlayerAccessor.
 	 */
 	@Inject(method = "setCamera", at = @At("HEAD"), cancellable = true)
 	private void railways$railways$setCamera(Entity entityToSpectate, CallbackInfo ci) {
+		Entity currentCamera = this.getCamera();
+		// Prevent resetting camera FROM conductor TO something else (vanilla tick thinks conductor is "dead")
+		if (currentCamera instanceof ConductorEntity && !(entityToSpectate instanceof ConductorEntity)) {
+			ci.cancel();
+			return;
+		}
+		// Prevent setting camera TO conductor through normal setCamera (we use accessor instead)
 		if (entityToSpectate instanceof ConductorEntity) ci.cancel();
 	}
 }
