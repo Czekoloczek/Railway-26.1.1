@@ -24,7 +24,9 @@ import com.railwayteam.railways.mixin.AccessorToolboxBlockEntity;
 import com.railwayteam.railways.util.packet.PacketSender;
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
+import com.simibubi.create.content.equipment.toolbox.ToolboxInventory;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +38,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,16 +54,18 @@ public class MountedToolbox extends ToolboxBlockEntity {
   }
 
   public void readFromItem(ItemStack stack) {
-    CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-    if (tag.isEmpty())
-      return;
-    // Restore inventory and other data from NBT (Create 1.21+)
-    // The parent's read() method handles inventory deserialization
-    read(tag, parent.level().registryAccess(), false);
-    if (tag.contains("UniqueId"))
-      setUniqueId(tag.getUUID("UniqueId"));
-    if (stack.has(DataComponents.CUSTOM_NAME))
+    // Read from Create's data components (1.21+)
+    ToolboxInventory inv = stack.get(AllDataComponents.TOOLBOX_INVENTORY);
+    if (inv != null) {
+      readInventory(inv);
+    }
+    UUID uuid = stack.get(AllDataComponents.TOOLBOX_UUID);
+    if (uuid != null) {
+      setUniqueId(uuid);
+    }
+    if (stack.has(DataComponents.CUSTOM_NAME)) {
       setCustomName(stack.get(DataComponents.CUSTOM_NAME));
+    }
   }
 
   public ConductorEntity getParent() {
@@ -136,16 +139,9 @@ public class MountedToolbox extends ToolboxBlockEntity {
 
   public ItemStack getCloneItemStack() {
     ItemStack stack = getDisplayStack();
-    CompoundTag data = new CompoundTag();
-    write(data, parent.level().registryAccess(), false);
-    CompoundTag inv = data.getCompound("Inventory");
-    
-    // Use CustomData to store the inventory and UUID
-    CompoundTag tag = new CompoundTag();
-    tag.put("Inventory", inv);
-    tag.putUUID("UniqueId", getUniqueId());
-    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-
+    // Use Create's data components (1.21+)
+    stack.set(AllDataComponents.TOOLBOX_INVENTORY, ((AccessorToolboxBlockEntity) this).getInventory());
+    stack.set(AllDataComponents.TOOLBOX_UUID, getUniqueId());
     return stack;
   }
 
