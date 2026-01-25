@@ -1,5 +1,10 @@
 {
+  "replace": false,
   "values": [
+    {
+      "id": "#c:plates/iron",
+      "required": false
+    },
     "create:iron_sheet"
   ]
 }
