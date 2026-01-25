@@ -1,5 +1,10 @@
 {
+  "replace": false,
   "values": [
+    {
+      "id": "#c:plates/brass",
+      "required": false
+    },
     "create:brass_sheet"
   ]
 }
