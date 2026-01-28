@@ -694,6 +694,14 @@ public class ConductorEntity extends AbstractGolem {
   @OnlyIn(Dist.CLIENT)
   private void _updatePossessionInputs() {
     this.setSpeed((float)this.getAttributeValue(Attributes.MOVEMENT_SPEED));
+
+    if (this.isPassenger()) {
+      this.zza = 0;
+      this.xxa = 0;
+      this.jumping = false;
+      return;
+    }
+
     this.zza = calculateImpulse(wasUpPressed(), wasDownPressed());
     this.xxa = calculateImpulse(wasLeftPressed(), wasRightPressed());
     if (!wasSprintPressed()) {
