@@ -1,0 +1,7 @@
+{
+	"parent": "railways:block/phantom_wide_gauge_base/obj_track",
+	"loader": "neoforge:obj",
+	"render_type": "minecraft:cutout_mipped",
+	"flip_v": true,
+	"model": "railways:models/block/wide_gauge_base/segment_right.obj"
+}

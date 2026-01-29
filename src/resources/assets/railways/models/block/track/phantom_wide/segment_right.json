@@ -1,9 +1,3 @@
 {
-  "parent": "railways:block/wide_gauge_base/segment_right",
-  "render_type": "minecraft:cutout_mipped",
-  "textures": {
-    "0": "railways:block/track/phantom/standard_track_phantom",
-    "1": "railways:block/track/phantom/standard_track_mip_phantom",
-    "particle": "minecraft:block/glass"
-  }
+  "parent": "railways:block/phantom_wide_gauge_base/segment_right"
 }
