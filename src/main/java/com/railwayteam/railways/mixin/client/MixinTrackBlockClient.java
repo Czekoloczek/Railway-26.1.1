@@ -93,7 +93,7 @@ public class MixinTrackBlockClient {
 
     @Inject(method = "prepareTrackOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;floor(D)I"), cancellable = true)
     private <Self extends Affine<Self>> void skipInvisiblePhantoms(Affine<Self> affine, BlockGetter world, BlockPos pos, BlockState state, BezierTrackPointLocation bezierPoint, AxisDirection direction, RenderedTrackOverlayType type, CallbackInfoReturnable<PartialModel> cir, @Local BezierConnection bc) {
-        if (bc.getMaterial() == CRTrackMaterials.PHANTOM && !PhantomSpriteManager.isVisible())
+        if ((bc.getMaterial() == CRTrackMaterials.PHANTOM || bc.getMaterial() == CRTrackMaterials.WIDE_GAUGE_PHANTOM || bc.getMaterial() == CRTrackMaterials.NARROW_GAUGE_PHANTOM) && !PhantomSpriteManager.isVisible())
             cir.setReturnValue(null);
     }
 }
