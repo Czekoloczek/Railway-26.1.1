@@ -18,6 +18,7 @@
 
 package com.railwayteam.railways.mixin.client;
 
+import com.google.common.collect.ImmutableList;
 import com.railwayteam.railways.mixin_interfaces.ILimited;
 import com.railwayteam.railways.registry.CRPackets;
 import com.railwayteam.railways.util.packet.StationLimitPacket;
@@ -30,6 +31,8 @@ import com.simibubi.create.content.trains.station.StationBlockEntity;
 import com.simibubi.create.content.trains.station.StationScreen;
 import com.simibubi.create.content.trains.station.TrainEditPacket;
 import com.simibubi.create.foundation.gui.widget.ScrollInput;
+import com.simibubi.create.foundation.gui.widget.TooltipArea;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
@@ -66,15 +69,24 @@ public abstract class MixinStationScreen extends AbstractStationScreen {
         int y = guiTop;
 
         boolean limitEnabled = station != null && ((ILimited) station).isLimitEnabled();
+        int checkboxX = x + 100;
+        int checkboxY = y + 102;
         railways$limitCheckbox = Checkbox.builder(
-                Component.translatable("railways.station.train_limit"),
+                Component.translatable("railways.station.train_limit").withStyle(ChatFormatting.WHITE),
                 Minecraft.getInstance().font)
-            .pos(x + background.getWidth() - 98, y + background.getHeight() - 26)
+            .pos(checkboxX, checkboxY)
             .selected(limitEnabled)
             .onValueChange((checkbox, selected) ->
                 CRPackets.PACKETS.send(new StationLimitPacket(blockEntity.getBlockPos(), selected)))
             .build();
         addRenderableWidget(railways$limitCheckbox);
+        addRenderableOnly(new TooltipArea(checkboxX, checkboxY, 55, 16)
+            .withTooltip(ImmutableList.of(
+                Component.translatable("railways.station.train_limit.tooltip.1")
+                    .withStyle(ChatFormatting.GRAY),
+                Component.translatable("railways.station.train_limit.tooltip.2")
+                    .withStyle(ChatFormatting.GRAY)
+            )));
 
         railways$iconTypes = new ArrayList<>(TrainIconType.REGISTRY.keySet());
         railways$iconTypeScroll = new ScrollInput(x + 4, y + 17, 160, 14)
