@@ -75,6 +75,13 @@ public class ConductorRenderer extends MobRenderer<ConductorEntity, ConductorEnt
 
   @Override
   public void render(ConductorEntity entity, float f1, float f2, PoseStack stack, MultiBufferSource source, int i1) {
+    if (entity.isPassenger()) {
+      stack.pushPose();
+      stack.translate(0.0, -0.15, 0.0);
+      super.render(entity, f1, f2, stack, source, i1);
+      stack.popPose();
+      return;
+    }
     super.render(entity, f1, f2, stack, source, i1);
   }
 

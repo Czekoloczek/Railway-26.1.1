@@ -423,8 +423,13 @@ public class TrainScenes {
         Selection straightButton = util.select().position(straightButtonPos);
         Selection rightButton = util.select().position(rightButtonPos);
 
+        Selection leftCurve = util.select().fromTo(8, 1, 5, 11, 1, 11);
+        Selection rightCurve = util.select().fromTo(3, 1, 5, 6, 1, 11);
+
         scene.world().showSection(leftTrack, Direction.DOWN);
         scene.world().showSection(rightTrack, Direction.DOWN);
+        scene.world().showSection(leftCurve, Direction.DOWN);
+        scene.world().showSection(rightCurve, Direction.DOWN);
         for (int i = 0; i < 15; i++) {
             scene.world().showSection(util.select().position(7, 1, i), Direction.DOWN);
             if (i == 1) {
