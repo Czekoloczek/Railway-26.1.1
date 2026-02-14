@@ -197,14 +197,14 @@ dependencies {
 }
 
 sourceSets.main {
-    // Hand-crafted resources first (higher priority), then generated
-    resources.srcDir("src/resources")
+    // Generated resources first (higher priority), then hand-crafted overrides
     resources.srcDir("src/generated/resources")
+    resources.srcDir("src/resources")
 }
 
 tasks {
     processResources {
-        // Prefer hand-crafted resources in src/resources over generated ones
+        // Prefer generated resources over hand-crafted duplicates
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         
         val props = mapOf(

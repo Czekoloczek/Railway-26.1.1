@@ -18,8 +18,10 @@
 
 package com.railwayteam.railways.content.custom_tracks.phantom;
 
+import com.railwayteam.railways.content.custom_tracks.NoCollisionCustomTrackBlock;
 import com.railwayteam.railways.content.custom_tracks.TransparentSegmentTrackBlock;
 import com.railwayteam.railways.registry.CRShapes;
+import com.railwayteam.railways.registry.CRTrackMaterials;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.trains.track.BezierTrackPointLocation;
 import com.simibubi.create.content.trains.track.TrackBlock;
@@ -35,7 +37,6 @@ import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class PhantomNarrowGaugeTrackBlock extends TrackBlock implements TransparentSegmentTrackBlock {
@@ -117,7 +118,10 @@ public class PhantomNarrowGaugeTrackBlock extends TrackBlock implements Transpar
 
     @Override
     public VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return Shapes.empty();
+        if (CRTrackMaterials.getBaseFromNarrow(getMaterial()).getBlock() instanceof NoCollisionCustomTrackBlock noCollisionBlock) {
+            return noCollisionBlock.getCollisionShape(pState, pLevel, pPos, pContext);
+        }
+        return super.getCollisionShape(pState, pLevel, pPos, pContext);
     }
 
     @Override
