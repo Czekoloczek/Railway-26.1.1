@@ -65,6 +65,7 @@ public class WideGaugeTrackBlockStateGeneratorImpl extends WideGaugeTrackBlockSt
 
         String prefix = "block/track/" + material.resourceName() + "/";
         String texturePrefix = "block/track/" + resName + "/";
+        boolean phantomVariant = "phantom".equals(resName);
         Map<String, String> textureMap = new HashMap<>();//prefix + get() + material.resName()
         switch (value) {
             case TE, TN, TS, TW -> {
@@ -109,16 +110,22 @@ public class WideGaugeTrackBlockStateGeneratorImpl extends WideGaugeTrackBlockSt
             .withExistingParent(prefix + value.getModel(),
                 Railways.asResource("block/wide_gauge_base/" + value.getModel()))
             .texture("particle", material.particle);
+        if (phantomVariant) {
+            builder.renderType(ResourceLocation.withDefaultNamespace("cutout_mipped"));
+        }
         for (String k : textureMap.keySet()) {
             builder = builder.texture(k, ResourceLocation.fromNamespaceAndPath(textureModId, texturePrefix + textureMap.get(k) + resName));
         }
         for (String k : new String[]{"segment_left", "segment_right", "tie"}) { // obj_track
-            prov.models()
+            BlockModelBuilder segmentBuilder = prov.models()
                 .withExistingParent(prefix + k,
                     Railways.asResource("block/wide_gauge_base/" + k))
                 .texture("0", ResourceLocation.fromNamespaceAndPath(textureModId, texturePrefix + "standard_track_" + resName))
                 .texture("1", ResourceLocation.fromNamespaceAndPath(textureModId, texturePrefix + "standard_track_mip_" + resName))
                 .texture("particle", material.particle);
+            if (phantomVariant) {
+                segmentBuilder.renderType(ResourceLocation.withDefaultNamespace("cutout_mipped"));
+            }
         }
         return builder;
     }
