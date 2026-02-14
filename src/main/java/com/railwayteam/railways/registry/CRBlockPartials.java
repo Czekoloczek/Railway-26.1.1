@@ -75,6 +75,47 @@ public class CRBlockPartials {
         return NO_TILT_CAPS.contains(name);
     }
 
+    public static String normalizeCustomCapName(String name) {
+        String normalized = name.strip();
+        if (normalized.regionMatches(true, 0, "[sus]", 0, 5)) {
+            normalized = normalized.substring(5).strip();
+        }
+        return normalized;
+    }
+
+    @Nullable
+    public static PartialModel getCustomConductorCapForName(String name) {
+        String normalized = normalizeCustomCapName(name);
+        for (Map.Entry<String, PartialModel> entry : CUSTOM_CONDUCTOR_CAPS.entrySet()) {
+            if (normalizeCustomCapName(entry.getKey()).equalsIgnoreCase(normalized)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static ResourceLocation getCustomConductorSkinForName(String name) {
+        String normalized = normalizeCustomCapName(name);
+        for (Map.Entry<String, ResourceLocation> entry : CUSTOM_CONDUCTOR_SKINS.entrySet()) {
+            if (normalizeCustomCapName(entry.getKey()).equalsIgnoreCase(normalized)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static ResourceLocation getCustomConductorNameSkin(String name) {
+        String normalized = normalizeCustomCapName(name);
+        for (Map.Entry<String, ResourceLocation> entry : CUSTOM_CONDUCTOR_SKINS_FOR_NAME.entrySet()) {
+            if (normalizeCustomCapName(entry.getKey()).equalsIgnoreCase(normalized)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
     public static void registerCustomSkin(String itemName, String textureLoc) {
         CUSTOM_CONDUCTOR_SKINS.put(itemName, Railways.asResource("textures/entity/custom_conductors/"+textureLoc));
     }

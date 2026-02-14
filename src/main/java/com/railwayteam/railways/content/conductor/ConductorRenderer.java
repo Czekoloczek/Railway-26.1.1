@@ -61,14 +61,16 @@ public class ConductorRenderer extends MobRenderer<ConductorEntity, ConductorEnt
   @Override
   public @NotNull ResourceLocation getTextureLocation(@NotNull ConductorEntity conductor) {
     ItemStack headItem = conductor.getItemBySlot(EquipmentSlot.HEAD);
-    String name = headItem.getHoverName().getString();
-    if (name.startsWith("[sus]"))
-      name = name.substring(5);
-    if (!headItem.isEmpty() && headItem.getItem() instanceof ConductorCapItem && CRBlockPartials.CUSTOM_CONDUCTOR_SKINS.containsKey(name)) {
-      return ensurePng(CRBlockPartials.CUSTOM_CONDUCTOR_SKINS.get(name));
+    String name = CRBlockPartials.normalizeCustomCapName(headItem.getHoverName().getString());
+    ResourceLocation capSkin = CRBlockPartials.getCustomConductorSkinForName(name);
+    if (!headItem.isEmpty() && headItem.getItem() instanceof ConductorCapItem && capSkin != null) {
+      return ensurePng(capSkin);
     }
-    if (conductor.getCustomName() != null && CRBlockPartials.CUSTOM_CONDUCTOR_SKINS_FOR_NAME.containsKey(conductor.getCustomName().getString())) {
-      return ensurePng(CRBlockPartials.CUSTOM_CONDUCTOR_SKINS_FOR_NAME.get(conductor.getCustomName().getString()));
+    if (conductor.getCustomName() != null) {
+      ResourceLocation conductorNameSkin = CRBlockPartials.getCustomConductorNameSkin(conductor.getCustomName().getString());
+      if (conductorNameSkin != null) {
+        return ensurePng(conductorNameSkin);
+      }
     }
     return TEXTURE;
   }
