@@ -33,11 +33,9 @@ public abstract class MixinItemModelShaper {
     @Inject(method = "getItemModel(Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/client/resources/model/BakedModel;", at = @At("HEAD"), cancellable = true, remap = true)
     private void addCustomConductorCapModels(ItemStack stack, CallbackInfoReturnable<BakedModel> cir) {
         if (stack.getItem() instanceof ConductorCapItem) {
-            String name = stack.getHoverName().getString();
-            if (name.startsWith("[sus]"))
-                name = name.substring(5);
-            if (CRBlockPartials.CUSTOM_CONDUCTOR_CAPS.containsKey(name))
-                cir.setReturnValue(CRBlockPartials.CUSTOM_CONDUCTOR_CAPS.get(name).get());
+            var customModel = CRBlockPartials.getCustomConductorCapForName(stack.getHoverName().getString());
+            if (customModel != null)
+                cir.setReturnValue(customModel.get());
         }
     }
 }

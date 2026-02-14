@@ -25,6 +25,7 @@ import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.conductor.toolbox.MountedToolbox;
 import com.railwayteam.railways.content.conductor.vent.VentBlock;
 import com.railwayteam.railways.content.switches.TrackSwitchBlock;
+import com.railwayteam.railways.registry.CRBlockPartials;
 import com.railwayteam.railways.registry.CREntities;
 import com.railwayteam.railways.registry.CRPackets;
 import com.railwayteam.railways.registry.CRTags;
@@ -136,8 +137,9 @@ public class ConductorEntity extends AbstractGolem {
       return false;
     if (!CRTags.AllItemTags.CONDUCTOR_CAPS.matches(headStack))
       return false;
-    String hoverName = headStack.getHoverName().getString();
-    return hoverName.startsWith("[sus]") || hoverName.equals("sus");
+    String hoverName = headStack.getHoverName().getString().strip();
+    return hoverName.regionMatches(true, 0, "[sus]", 0, 5)
+      || CRBlockPartials.normalizeCustomCapName(hoverName).equalsIgnoreCase("sus");
   }
 
   public static final GameProfile FAKE_PLAYER_PROFILE = new GameProfile(
