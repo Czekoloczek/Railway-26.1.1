@@ -123,7 +123,7 @@ public class CustomTrackOverlayRendering {
         if (bezierPoint != null && world.getBlockEntity(pos) instanceof TrackBlockEntity trackTE) {
             BezierConnection bc = trackTE.getConnections().get(bezierPoint.curveTarget());
             if (bc != null) {
-                if (bc.getMaterial() == CRTrackMaterials.PHANTOM && !PhantomSpriteManager.isVisible())
+                if (isPhantomTrack(bc.getMaterial()) && !PhantomSpriteManager.isVisible())
                     return null;
 
                 double length = Mth.floor(bc.getLength() * 2);
@@ -165,7 +165,7 @@ public class CustomTrackOverlayRendering {
             normal = ((ITrackBlock) state.getBlock()).getUpNormal(world, pos, state);
         }
 
-        if (state.getBlock() instanceof TrackBlock track && track.getMaterial() == CRTrackMaterials.PHANTOM && !PhantomSpriteManager.isVisible())
+        if (state.getBlock() instanceof TrackBlock track && isPhantomTrack(track.getMaterial()) && !PhantomSpriteManager.isVisible())
             return null;
 
         //Shift for casings and monorails
@@ -229,5 +229,11 @@ public class CustomTrackOverlayRendering {
         } catch (Exception ignored) {}
 
         return false;
+    }
+
+    private static boolean isPhantomTrack(com.simibubi.create.content.trains.track.TrackMaterial material) {
+        return material == CRTrackMaterials.PHANTOM 
+            || material == CRTrackMaterials.WIDE_GAUGE_PHANTOM 
+            || material == CRTrackMaterials.NARROW_GAUGE_PHANTOM;
     }
 }

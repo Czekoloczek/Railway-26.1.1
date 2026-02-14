@@ -197,11 +197,16 @@ dependencies {
 }
 
 sourceSets.main {
+    // Generated resources first (higher priority), then hand-crafted overrides
     resources.srcDir("src/generated/resources")
+    resources.srcDir("src/resources")
 }
 
 tasks {
     processResources {
+        // Prefer generated resources over hand-crafted duplicates
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        
         val props = mapOf(
             "version" to project.version.toString(),
             "minecraft_version" to minecraftVersion,
@@ -215,6 +220,11 @@ tasks {
         filesMatching("META-INF/neoforge.mods.toml") {
             expand(props)
         }
+    }
+    
+    // Handle duplicates in sourcesJar too
+    withType<Jar> {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
     
     jar {

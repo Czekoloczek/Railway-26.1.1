@@ -25,6 +25,8 @@ import com.railwayteam.railways.content.custom_tracks.NoCollisionCustomTrackBloc
 import com.railwayteam.railways.content.custom_tracks.monorail.MonorailTrackBlock;
 import com.railwayteam.railways.content.custom_tracks.narrow_gauge.NarrowGaugeTrackBlock;
 import com.railwayteam.railways.content.custom_tracks.phantom.PhantomTrackBlock;
+import com.railwayteam.railways.content.custom_tracks.phantom.PhantomNarrowGaugeTrackBlock;
+import com.railwayteam.railways.content.custom_tracks.phantom.PhantomWideGaugeTrackBlock;
 import com.railwayteam.railways.content.custom_tracks.wide_gauge.WideGaugeTrackBlock;
 import com.railwayteam.railways.mixin.AccessorBlockEntityType;
 import com.simibubi.create.content.trains.track.TrackBlock;
@@ -176,7 +178,25 @@ public class CRTrackMaterials {
             .standardModels()
             .build(),
         WIDE_GAUGE_ANDESITE = wideVariant(TrackMaterial.ANDESITE),
-        NARROW_GAUGE_ANDESITE = narrowVariant(TrackMaterial.ANDESITE)
+        NARROW_GAUGE_ANDESITE = narrowVariant(TrackMaterial.ANDESITE),
+        WIDE_GAUGE_PHANTOM = make(Railways.asResource("phantom_wide"))
+            .lang("Wide Phantom")
+            .block(() -> CRBlocks.WIDE_GAUGE_TRACKS.get(getWide(PHANTOM)))
+            .particle(ResourceLocation.withDefaultNamespace("block/glass"))
+            .noRecipeGen()
+            .trackType(CRTrackType.WIDE_GAUGE)
+            .customBlockFactory(PhantomWideGaugeTrackBlock::new)
+            .standardModels()
+            .build(),
+        NARROW_GAUGE_PHANTOM = make(Railways.asResource("phantom_narrow"))
+            .lang("Narrow Phantom")
+            .block(() -> CRBlocks.NARROW_GAUGE_TRACKS.get(getNarrow(PHANTOM)))
+            .particle(ResourceLocation.withDefaultNamespace("block/glass"))
+            .noRecipeGen()
+            .trackType(CRTrackType.NARROW_GAUGE)
+            .customBlockFactory(PhantomNarrowGaugeTrackBlock::new)
+            .standardModels()
+            .build()
         ;
 
     public static final Map<TrackMaterial, TrackMaterial> WIDE_GAUGE = new HashMap<>();
@@ -207,6 +227,12 @@ public class CRTrackMaterials {
             NARROW_GAUGE.put(baseMaterial, narrowMaterial);
             NARROW_GAUGE_REVERSE.put(narrowMaterial, baseMaterial);
         }
+
+        // Phantom gauge variants (not auto-generated since PHANTOM uses UNIVERSAL track type)
+        WIDE_GAUGE.put(PHANTOM, WIDE_GAUGE_PHANTOM);
+        WIDE_GAUGE_REVERSE.put(WIDE_GAUGE_PHANTOM, PHANTOM);
+        NARROW_GAUGE.put(PHANTOM, NARROW_GAUGE_PHANTOM);
+        NARROW_GAUGE_REVERSE.put(NARROW_GAUGE_PHANTOM, PHANTOM);
     }
 
     public static TrackMaterial getWide(TrackMaterial material) {

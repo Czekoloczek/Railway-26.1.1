@@ -1,5 +1,7 @@
 {
   "values": [
-    "railways:track_phantom"
+    "railways:track_phantom",
+    "railways:track_phantom_wide",
+    "railways:track_phantom_narrow"
   ]
 }
