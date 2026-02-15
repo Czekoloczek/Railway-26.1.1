@@ -22,6 +22,7 @@ import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.util.datafix.schemas.NamespacedSchema;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,10 +57,7 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
 
     @Override
     public @NotNull Schema createBaseSchema() {
-        if (this.latestVanillaSchema == null) {
-            throw new IllegalStateException("Latest vanilla schema is not initialized - DataFixer failed to initialize properly");
-        }
-        return new Schema(0, this.latestVanillaSchema);
+        return new NamespacedSchema(0, this.latestVanillaSchema);
     }
 
     @Override
