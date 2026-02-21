@@ -6,7 +6,7 @@
       "tag": "railways:palettes/dye_groups/iron_wrapped_boiler"
     },
     {
-      "tag": "railways:internal/dyes/lime_dyes"
+      "tag": "c:dyes/lime"
     }
   ],
   "result": {

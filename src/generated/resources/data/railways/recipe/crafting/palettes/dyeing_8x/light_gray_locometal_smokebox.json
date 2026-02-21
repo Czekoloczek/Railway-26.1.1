@@ -6,7 +6,7 @@
       "tag": "railways:palettes/dye_groups/smokebox"
     },
     "d": {
-      "tag": "railways:internal/dyes/light_gray_dyes"
+      "tag": "c:dyes/light_gray"
     }
   },
   "pattern": [

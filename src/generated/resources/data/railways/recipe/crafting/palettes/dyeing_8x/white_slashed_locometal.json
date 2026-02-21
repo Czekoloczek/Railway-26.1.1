@@ -6,7 +6,7 @@
       "tag": "railways:palettes/dye_groups/slashed"
     },
     "d": {
-      "tag": "railways:internal/dyes/white_dyes"
+      "tag": "c:dyes/white"
     }
   },
   "pattern": [

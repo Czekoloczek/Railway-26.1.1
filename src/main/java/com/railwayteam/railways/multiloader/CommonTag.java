@@ -48,7 +48,7 @@ public class CommonTag<T> {
 	}
 
 	public static <T> CommonTag<T> conventional(ResourceKey<? extends Registry<T>> registry, String common, String fabric, String forge) {
-		ResourceLocation commonId = Railways.asResource("internal/" + common);
+		ResourceLocation commonId = ResourceLocation.fromNamespaceAndPath("c", forge);
 		TagKey<T> commonTag = TagKey.create(registry, commonId);
 		return new CommonTag<>(commonTag, commonTag, commonTag);
 	}

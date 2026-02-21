@@ -6,7 +6,7 @@
       "tag": "railways:palettes/dye_groups/flat_riveted"
     },
     {
-      "tag": "railways:internal/dyes/orange_dyes"
+      "tag": "c:dyes/orange"
     }
   ],
   "result": {

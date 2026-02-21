@@ -6,7 +6,7 @@
       "tag": "railways:palettes/dye_groups/riveted"
     },
     "d": {
-      "tag": "railways:internal/dyes/gray_dyes"
+      "tag": "c:dyes/gray"
     }
   },
   "pattern": [
