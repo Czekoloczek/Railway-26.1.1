@@ -72,7 +72,6 @@ public class RailwaysImpl {
 	public RailwaysImpl(IEventBus modEventBus, ModContainer modContainer) {
 		bus = modEventBus;
 		CRCreativeModeTabsImpl.register(RailwaysImpl.bus);
-		// Ensure mob attributes exist even if Registrate attribute wiring is missed.
 		modEventBus.addListener(CREntityAttributesImpl::registerAttributes);
 		Railways.init();
 		CRConfigsImpl.register(modContainer);

@@ -71,7 +71,6 @@ public class CREntities {
                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0f, 1.0f)))
                             )
             )))
-            .attributes(ConductorEntity::createAttributes)
             .register();
 
     private static <T> NonNullConsumer<T> configure(Consumer<EntityTypeConfigurator> consumer) {

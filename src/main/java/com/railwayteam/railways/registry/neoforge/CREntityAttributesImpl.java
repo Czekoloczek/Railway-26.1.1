@@ -25,8 +25,6 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 public class CREntityAttributesImpl {
 	public static void registerAttributes(EntityAttributeCreationEvent event) {
-		if (!DefaultAttributes.hasSupplier(CREntities.CONDUCTOR.get())) {
-			event.put(CREntities.CONDUCTOR.get(), ConductorEntity.createAttributes().build());
-		}
+		event.put(CREntities.CONDUCTOR.get(), ConductorEntity.createAttributes().build());
 	}
 }
