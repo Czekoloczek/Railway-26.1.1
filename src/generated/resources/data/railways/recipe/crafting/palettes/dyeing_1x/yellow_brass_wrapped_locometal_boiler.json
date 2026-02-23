@@ -6,7 +6,7 @@
       "tag": "railways:palettes/dye_groups/brass_wrapped_boiler"
     },
     {
-      "tag": "railways:internal/dyes/yellow_dyes"
+      "tag": "c:dyes/yellow"
     }
   ],
   "result": {

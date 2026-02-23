@@ -6,7 +6,7 @@
       "tag": "railways:palettes/dye_groups/iron_wrapped_slashed"
     },
     "d": {
-      "tag": "railways:internal/dyes/red_dyes"
+      "tag": "c:dyes/red"
     }
   },
   "pattern": [

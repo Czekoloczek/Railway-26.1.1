@@ -6,7 +6,7 @@
       "tag": "railways:palettes/dye_groups/iron_wrapped_boiler"
     },
     "d": {
-      "tag": "railways:internal/dyes/white_dyes"
+      "tag": "c:dyes/white"
     }
   },
   "pattern": [
