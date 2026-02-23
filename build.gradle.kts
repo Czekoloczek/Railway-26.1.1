@@ -100,6 +100,7 @@ repositories {
     maven("https://maven.theillusivec4.top/")
     maven("https://maven.maxhenkel.de/releases")
     maven("https://api.modrinth.com/maven")
+    maven("https://jm.gserv.me/repository/maven-public/") // JourneyMap API
 }
 
 // NeoForge ModDev configuration
@@ -165,10 +166,14 @@ dependencies {
     compileOnly("com.simibubi.create:create-${minecraftVersion}:${createForgeVersion}") {
         exclude(group = "dev.ftb.mods")
         exclude(group = "net.createmod.ponder")
+        exclude(group = "maven.modrinth", module = "journeymap")
+        exclude(group = "info.journeymap")
     }
     runtimeOnly("com.simibubi.create:create-${minecraftVersion}:${createForgeVersion}") {
         exclude(group = "dev.ftb.mods")
         exclude(group = "net.createmod.ponder")
+        exclude(group = "maven.modrinth", module = "journeymap")
+        exclude(group = "info.journeymap")
     }
     
     // Ponder
@@ -189,6 +194,13 @@ dependencies {
     // Annotations
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     
+    // JourneyMap (explicit version to avoid Create pulling in mismatched beta.46)
+    // The API jar is bundled inside JourneyMap via JarJar — do NOT add it separately
+    val journeymapVersion: String = (rootProject.findProperty("journeymap_version") as String)
+    runtimeOnly("maven.modrinth:journeymap:${journeymapVersion}+neoforge") {
+        exclude(group = "info.journeymap") // JarJar-bundled API is authoritative
+    }
+
     // Voice chat API
     compileOnly("de.maxhenkel.voicechat:voicechat-api:${voicechatApiVersion}")
     if ((rootProject.findProperty("enable_simple_voice_chat") as String).toBoolean()) {
