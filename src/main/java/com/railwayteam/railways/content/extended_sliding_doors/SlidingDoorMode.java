@@ -64,7 +64,7 @@ public enum SlidingDoorMode implements INamedIconOptions {
 
     SlidingDoorMode(AllIcons icon, boolean stationBased) {
         this.icon = icon;
-        this.translationKey = "sliding_door.mode." + Lang.asId(name());
+        this.translationKey = "create.sliding_door.mode." + Lang.asId(name());
     }
 
     public boolean canOpenManually() {
@@ -87,7 +87,7 @@ public enum SlidingDoorMode implements INamedIconOptions {
     public static SlidingDoorMode fromNbt(CompoundTag nbt) {
         if (nbt == null)
             return SlidingDoorMode.NORMAL;
-        return SlidingDoorMode.values()[Math.min(2, Math.max(0, nbt.getInt("ScrollValue")))];
+        return SlidingDoorMode.values()[Math.min(values().length - 1, Math.max(0, nbt.getInt("ScrollValue")))];
     }
 
     public static class SlidingDoorValueBoxTransform extends CenteredSideValueBoxTransform {
