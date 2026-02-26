@@ -1,5 +1,7 @@
 {
   "parent": "railways:block/palettes/boiler/boiler",
+  "ambientocclusion": false,
+  "automatic_culling": false,
   "flip_v": true,
   "loader": "neoforge:obj",
   "model": "railways:models/block/palettes/boiler/boiler_z_raised.obj",
