@@ -17,6 +17,7 @@
  */
 
 package com.railwayteam.railways.neoforge.datagen;
+import java.util.concurrent.CompletableFuture;
 
 import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.base.data.recipe.RailwaysSequencedAssemblyRecipeGen;
@@ -67,5 +68,9 @@ public class DataGenerators {
         
         // Add the compat track loot table post-processor
         generator.addProvider(runServer, new CompatTrackLootTableProvider(packOutput, lookupProvider));
+        // Add the compat track tag generator
+        generator.addProvider(runServer, new CompatTrackTagProvider(packOutput, lookupProvider));
+        // Add the compat track recipe post-processor
+        // Removed CompatTrackRecipeProvider
     }
 }
