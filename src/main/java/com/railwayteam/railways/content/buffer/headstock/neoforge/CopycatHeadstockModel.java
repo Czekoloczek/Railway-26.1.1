@@ -158,7 +158,7 @@ public class CopycatHeadstockModel implements BakedModel {
 
     private List<BakedQuad> getCopycatExtensionQuads(@Nullable BlockState state, @Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @Nullable RenderType renderType) {
         // Rubidium: see below
-        if (side != null && state.getBlock() instanceof CopycatBlock ccb && ccb.shouldFaceAlwaysRender(state, side))
+        if (side != null && state != null && state.getBlock() instanceof CopycatBlock ccb && ccb.shouldFaceAlwaysRender(state, side))
             return Collections.emptyList();
 
         BlockState material = getMaterial(data);
@@ -181,7 +181,7 @@ public class CopycatHeadstockModel implements BakedModel {
 
         // Rubidium: render side!=null versions of the base material during side==null,
         // to avoid getting culled away
-        if (side == null && state.getBlock() instanceof CopycatBlock ccb)
+        if (side == null && state != null && state.getBlock() instanceof CopycatBlock ccb)
             for (Direction nonOcclusionSide : Iterate.directions)
                 if (ccb.shouldFaceAlwaysRender(state, nonOcclusionSide))
                     croppedQuads.addAll(getCroppedQuads(state, nonOcclusionSide, rand, material, wrappedData, renderType));

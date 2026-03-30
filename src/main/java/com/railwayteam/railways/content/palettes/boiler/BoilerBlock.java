@@ -111,6 +111,11 @@ public class BoilerBlock extends Block implements IWrenchable, IHasCustomOutline
     }
 
     @Override
+    public boolean useShapeForLightOcclusion(@NotNull BlockState state) {
+        return true;
+    }
+
+    @Override
     public float getShadeBrightness(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos) {
         return 1.0f;
     }

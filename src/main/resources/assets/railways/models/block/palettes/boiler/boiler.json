@@ -1,6 +1,6 @@
 {
   "parent": "create:block/large_wheels",
-  "ambient_occlusion": false,
+  "ambientocclusion": false,
   "display": {
     "gui": {
       "rotation": [30, 45, 0],

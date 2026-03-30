@@ -21,7 +21,7 @@ package com.railwayteam.railways.content.fuel;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-// no dedicated ResourceLocationException available in this mapping; rely on IllegalArgumentException from parse
+import com.railwayteam.railways.Railways;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -72,17 +72,22 @@ public class LiquidFuelType {
                                 String string = primitive.getAsString();
 
                                 if (string.startsWith("#")) {
-                                    TagKey<Fluid> tag = TagKey.create(Registries.FLUID, ResourceLocation.parse(primitive.getAsString().substring(1)));
+                                    TagKey<Fluid> tag = TagKey.create(Registries.FLUID, ResourceLocation.parse(string.substring(1)));
                                     if (tag != null) {
                                         type.fluidTags.add(() -> tag);
                                     }
                                 } else {
-                                    Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(primitive.getAsString()));
-                                    if (fluid != null) {
+                                    ResourceLocation fluidId = ResourceLocation.parse(string);
+                                    if (BuiltInRegistries.FLUID.containsKey(fluidId)) {
+                                        Fluid fluid = BuiltInRegistries.FLUID.get(fluidId);
                                         type.fluids.add(() -> fluid);
+                                    } else {
+                                        Railways.LOGGER.warn("Liquid fuel type references unknown fluid '{}', skipping", fluidId);
                                     }
                                 }
-                            } catch (IllegalArgumentException ignored) {}
+                            } catch (IllegalArgumentException e) {
+                                Railways.LOGGER.warn("Liquid fuel type has invalid fluid entry '{}': {}", primitive.getAsString(), e.getMessage());
+                            }
                         }
                     }
                 }
@@ -92,7 +97,9 @@ public class LiquidFuelType {
 
             parseJsonPrimitive(object, "fuel_ticks", JsonPrimitive::isNumber, primitive -> type.fuelTicks = primitive.getAsInt());
             parseJsonPrimitive(object, "invalid", JsonPrimitive::isBoolean, primitive -> type.invalid = primitive.getAsBoolean());
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            Railways.LOGGER.warn("Failed to parse liquid fuel type: {}", e.getMessage());
+        }
 
         return type;
     }
