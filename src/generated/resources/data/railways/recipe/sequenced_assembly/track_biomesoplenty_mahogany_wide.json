@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
   "type": "create:sequenced_assembly",
   "ingredient": {
     "item": "railways:track_biomesoplenty_mahogany"
@@ -54,11 +60,5 @@
   ],
   "transitional_item": {
     "id": "railways:track_incomplete_biomesoplenty_mahogany_wide"
-  },
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "biomesoplenty"
-    }
-  ]
+  }
 }

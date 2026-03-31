@@ -19,7 +19,6 @@
 package com.railwayteam.railways.content.custom_tracks.casing;
 
 import com.railwayteam.railways.Railways;
-import com.simibubi.create.foundation.model.BakedQuadHelper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -65,20 +64,20 @@ public class SpriteCopyingBakedModel implements BakedModel {
       if (overrideSprite == null || overrideQuad == null) {
         Railways.LOGGER.error("No overriding sprites found for side "+(pSide==null?"null":pSide.toString())+" blockstate: "+(pState==null?"null":pState.toString()));
       }
-      TextureAtlasSprite goalSprite = overrideQuad != null ? overrideQuad.getSprite() : quad.getSprite();
-      TextureAtlasSprite baseSprite = quad.getSprite();
-      BakedQuad newQuad = BakedQuadHelper.clone(quad);
-      int[] vertexData = newQuad.getVertices();
-      for (int vertex = 0; vertex < 4; vertex++) {
-        float u = BakedQuadHelper.getU(vertexData, vertex);
-        float v = BakedQuadHelper.getV(vertexData, vertex);
-        BakedQuadHelper.setU(vertexData, vertex, u - baseSprite.getU0() + goalSprite.getU0());
-        BakedQuadHelper.setV(vertexData, vertex, v - baseSprite.getV0() + goalSprite.getV0());
-      }
-      quads.add(new BakedQuad(vertexData, quad.getTintIndex(), quad.getDirection(),
-          overrideSprite != null ? overrideSprite : baseSprite, true));
+      quads.add(new BakedQuad(transformVertices(quad.getVertices(), quad.getSprite(), (overrideQuad!=null?overrideQuad:quad)), quad.getTintIndex(), quad.getDirection(),
+          overrideSprite != null ? overrideSprite : quad.getSprite(), true));
     }
     return quads;
+  }
+
+  private int[] transformVertices(int[] baseVertices, TextureAtlasSprite baseSprite, BakedQuad uvSource) {
+    TextureAtlasSprite goalSprite = uvSource.getSprite();
+    int[] newVertices = baseVertices.clone();
+    for (int i = 0; i < baseVertices.length; i += 8) {
+      newVertices[i + 4] = Float.floatToRawIntBits(Float.intBitsToFloat(baseVertices[i + 4]) - baseSprite.getU0() + goalSprite.getU0());
+      newVertices[i + 5] = Float.floatToRawIntBits(Float.intBitsToFloat(baseVertices[i + 5]) - baseSprite.getV0() + goalSprite.getV0());
+    }
+    return newVertices;
   }
 
   @Override

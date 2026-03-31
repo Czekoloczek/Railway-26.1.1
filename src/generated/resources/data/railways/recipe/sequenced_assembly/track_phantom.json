@@ -1,10 +1,11 @@
 {
   "type": "create:sequenced_assembly",
   "ingredient": {
-    "tag": "railways:compat_slabs/railways/phantom"
+    "item": "minecraft:phantom_membrane"
   },
   "results": [
     {
+      "count": 32,
       "id": "railways:track_phantom"
     }
   ],
@@ -15,7 +16,9 @@
         {
           "item": "railways:track_incomplete_phantom"
         },
-        []
+        {
+          "item": "minecraft:iron_ingot"
+        }
       ],
       "results": [
         {
@@ -29,7 +32,9 @@
         {
           "item": "railways:track_incomplete_phantom"
         },
-        []
+        {
+          "item": "minecraft:iron_ingot"
+        }
       ],
       "results": [
         {

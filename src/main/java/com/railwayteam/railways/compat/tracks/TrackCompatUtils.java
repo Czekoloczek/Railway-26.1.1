@@ -54,15 +54,7 @@ import static com.railwayteam.railways.base.data.CRTagGen.addOptionalTag;
 public abstract class TrackCompatUtils {
 
     public static final Set<String> TRACK_COMPAT_MODS = ImmutableSet.of(
-            "hexcasting",
-            "byg", // Oh The Biomes You'll Go,
-            "blue_skies",
-            "twilightforest",
-            "biomesoplenty",
-            "natures_spirit",
-            "create_dd", // Dreams 'n' Desires
-            "quark",
-            "tfc" // TerraFirmaCraft
+            "biomesoplenty"
     );
 
     public static boolean anyLoaded() {

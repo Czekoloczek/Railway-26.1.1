@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
   "type": "create:sequenced_assembly",
   "ingredient": {
     "tag": "railways:compat_slabs/biomesoplenty/willow"
@@ -59,11 +65,5 @@
   ],
   "transitional_item": {
     "id": "railways:track_incomplete_biomesoplenty_willow_narrow"
-  },
-  "neoforge:conditions": [
-    {
-      "type": "neoforge:mod_loaded",
-      "modid": "biomesoplenty"
-    }
-  ]
+  }
 }

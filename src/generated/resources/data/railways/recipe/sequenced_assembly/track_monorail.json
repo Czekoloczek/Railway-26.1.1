@@ -1,10 +1,11 @@
 {
   "type": "create:sequenced_assembly",
   "ingredient": {
-    "tag": "railways:compat_slabs/railways/monorail"
+    "item": "create:metal_girder"
   },
   "results": [
     {
+      "count": 6,
       "id": "railways:track_monorail"
     }
   ],
@@ -15,7 +16,9 @@
         {
           "item": "railways:track_incomplete_monorail"
         },
-        []
+        {
+          "item": "create:metal_bracket"
+        }
       ],
       "results": [
         {
@@ -29,7 +32,9 @@
         {
           "item": "railways:track_incomplete_monorail"
         },
-        []
+        {
+          "item": "create:iron_sheet"
+        }
       ],
       "results": [
         {

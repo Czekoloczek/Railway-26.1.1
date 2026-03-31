@@ -31,9 +31,7 @@ public class BoilerGeneratorImpl extends BoilerGenerator {
         // but when I do it in blockstate there's horrible shading issues for the z rotation
         String colorName = color == null ? "netherite" : color.name().toLowerCase(Locale.ROOT);
         return prov.models().withExistingParent(ctx.getName() + "_" + style.getSerializedName() + "_" + axis.getName() + (raised ? "_raised" : ""), prov.modLoc("block/palettes/boiler/boiler"))
-            .ao(false)
             .customLoader(ObjModelBuilder::begin)
-            .automaticCulling(false)
             .flipV(true)
             .modelLocation(prov.modLoc("models/block/palettes/boiler/boiler_"+axis.getName()+(raised ? "_raised" : "")+".obj"))
             .end()

@@ -19,7 +19,6 @@
 package com.railwayteam.railways.neoforge.events;
 
 import com.railwayteam.railways.content.conductor.ConductorEntity;
-import com.railwayteam.railways.content.conductor.ServerPlayerPossessionAccess;
 import com.railwayteam.railways.content.conductor.toolbox.MountedToolbox;
 import com.railwayteam.railways.mixin.AccessorToolboxBlockEntity;
 import com.railwayteam.railways.registry.neoforge.CRBlockEntitiesImpl;
@@ -51,16 +50,6 @@ public class CommonEventsForge {
 	public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
 		if (event.getEntity() instanceof ServerPlayer player)
 			CommonEvents.onPlayerJoin(player);
-	}
-
-	@SubscribeEvent
-	public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-		if (event.getEntity() instanceof ServerPlayer player) {
-			ConductorEntity conductor = ((ServerPlayerPossessionAccess) player).railways$getPossessedConductor();
-			if (conductor != null) {
-				conductor.stopViewing(player);
-			}
-		}
 	}
 
 	@SubscribeEvent

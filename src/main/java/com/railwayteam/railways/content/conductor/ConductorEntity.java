@@ -793,14 +793,6 @@ public class ConductorEntity extends AbstractGolem {
     }
   }
 
-  @Override
-  public void travel(Vec3 movementInput) {
-    if (!this.level().isClientSide && isPossessed()) {
-      return;
-    }
-    super.travel(movementInput);
-  }
-
   /* End possession variables */
 
   protected FrequencyListener forwardListener;

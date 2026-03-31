@@ -45,7 +45,7 @@
           "item": "railways:lime_incomplete_conductor_cap"
         },
         {
-          "tag": "c:string"
+          "item": "minecraft:string"
         }
       ],
       "results": [

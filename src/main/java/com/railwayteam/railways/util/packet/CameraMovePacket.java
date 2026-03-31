@@ -25,7 +25,6 @@ import com.railwayteam.railways.multiloader.C2SPacket;
 import com.railwayteam.railways.multiloader.S2CPacket;
 import com.railwayteam.railways.registry.CRPackets;
 import net.minecraft.client.Minecraft;
-import com.railwayteam.railways.content.conductor.ServerPlayerPossessionAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
@@ -166,8 +165,7 @@ public class CameraMovePacket implements C2SPacket, S2CPacket {
 
     @Override
     public void handle(ServerPlayer sender1) {
-        ConductorEntity possessed = ((ServerPlayerPossessionAccess) sender1).railways$getPossessedConductor();
-        if (sender1.level().getEntity(id) instanceof ConductorEntity conductor && conductor == possessed) {
+        if (sender1.level().getEntity(id) instanceof ConductorEntity conductor && sender1.getCamera() == conductor) {
             if (containsInvalidValues(move.getX(0.0), move.getY(0.0), move.getZ(0.0), move.getYRot(0.0f), move.getXRot(0.0f))) {
                 sender1.connection.disconnect(Component.translatable("multiplayer.disconnect.invalid_player_movement"));
                 return;
@@ -229,7 +227,7 @@ public class CameraMovePacket implements C2SPacket, S2CPacket {
             boolean bl3 = false;
             if (q > 0.0625) {
                 bl3 = true;
-                teleport(sender1, conductor, conductor.getX(), conductor.getY(), conductor.getZ(), g, h);
+//                Railways.LOGGER.warn("{} moved wrongly!", (Object)sender1.getName().getString());
                 return;
             }
             conductor.absMoveTo(d, e, f, g, h);

@@ -12,14 +12,6 @@ public class CompatLootTableProvider {
     private static final Map<String, String> COMPAT_MODS = new HashMap<>();
     
     static {
-        COMPAT_MODS.put("byg", "byg");
-        COMPAT_MODS.put("tfc", "tfc");
-        COMPAT_MODS.put("create_dd", "create_dd");
-        COMPAT_MODS.put("blue_skies", "blue_skies");
-        COMPAT_MODS.put("twilightforest", "twilightforest");
-        COMPAT_MODS.put("natures_spirit", "natures_spirit");
-        COMPAT_MODS.put("quark", "quark");
-        COMPAT_MODS.put("hexcasting", "hexcasting");
         COMPAT_MODS.put("biomesoplenty", "biomesoplenty");
     }
     
