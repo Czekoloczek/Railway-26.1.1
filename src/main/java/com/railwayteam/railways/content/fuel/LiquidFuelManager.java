@@ -21,7 +21,6 @@ package com.railwayteam.railways.content.fuel;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.railwayteam.railways.Railways;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -101,8 +100,6 @@ public class LiquidFuelManager {
             }
 
             fillFluidMap();
-            Railways.LOGGER.info("Loaded {} liquid fuel type(s) ({} fluid entries, {} tag entries)",
-                    CUSTOM_TYPE_MAP.size(), FLUID_TO_TYPE_MAP.size(), TAG_TO_TYPE_MAP.size());
         }
     }
 }

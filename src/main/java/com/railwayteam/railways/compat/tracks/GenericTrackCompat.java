@@ -71,7 +71,7 @@ public class GenericTrackCompat {
     protected final Map<String, NonNullSupplier<? extends TrackBlock>> BLOCKS = new HashMap<>();
 
     public static boolean isDataGen() {
-        return Utils.isEnvVarTrue("DATAGEN");
+        return true;
     }
 
     static {

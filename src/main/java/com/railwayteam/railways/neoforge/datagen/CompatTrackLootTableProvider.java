@@ -35,17 +35,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class CompatTrackLootTableProvider implements DataProvider {
 
-    private static final Map<String, String> MOD_ID_MAP = Map.ofEntries(
-        Map.entry("byg", "byg"),
-        Map.entry("tfc", "tfc"),
-        Map.entry("blue_skies", "blue_skies"),
-        Map.entry("twilightforest", "twilightforest"),
-        Map.entry("biomesoplenty", "biomesoplenty"),
-        Map.entry("natures_spirit", "natures_spirit"),
-        Map.entry("create_dd", "create_dd"),
-        Map.entry("quark", "quark"),
-        Map.entry("hexcasting", "hexcasting")
-    );
+    private static final Map<String, String> MOD_ID_MAP = Map.of("biomesoplenty", "biomesoplenty");
 
     private final PackOutput output;
     private final CompletableFuture<HolderLookup.Provider> registries;

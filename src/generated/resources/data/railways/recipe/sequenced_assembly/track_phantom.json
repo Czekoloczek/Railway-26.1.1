@@ -17,7 +17,7 @@
           "item": "railways:track_incomplete_phantom"
         },
         {
-          "tag": "c:ingots/iron"
+          "item": "minecraft:iron_ingot"
         }
       ],
       "results": [
@@ -33,7 +33,7 @@
           "item": "railways:track_incomplete_phantom"
         },
         {
-          "tag": "c:ingots/iron"
+          "item": "minecraft:iron_ingot"
         }
       ],
       "results": [

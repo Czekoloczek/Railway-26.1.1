@@ -77,8 +77,6 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
         if (dataFixer != null)
             compound.putInt("Railways_DataVersion", dataFixer.currentVersion());
 
-        compound.putBoolean("Railways_Unofficial_Port", true);
-
         return compound;
     }
 }
