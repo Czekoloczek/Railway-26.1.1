@@ -144,6 +144,24 @@ public class RailwaysSequencedAssemblyRecipeGen extends RailwaysRecipeProvider {
             .addStep(PressingRecipe::new, rb -> rb)
         ));
 
+        TRACKS.put(CRTrackMaterials.WIDE_GAUGE_PHANTOM, create("track_phantom_wide", b -> b.require(CRTrackMaterials.PHANTOM.getBlock())
+            .transitionTo(CRItems.ITEM_INCOMPLETE_TRACK.get(CRTrackMaterials.WIDE_GAUGE_PHANTOM).get())
+            .addOutput(CRTrackMaterials.WIDE_GAUGE_PHANTOM.getBlock(), 1)
+            .loops(1)
+            .addStep(CuttingRecipe::new, rb -> rb)
+            .addStep(DeployerApplicationRecipe::new, rb -> rb.require(Ingredient.of(net.minecraft.world.item.Items.PHANTOM_MEMBRANE)))
+            .addStep(PressingRecipe::new, rb -> rb)
+        ));
+
+        TRACKS.put(CRTrackMaterials.NARROW_GAUGE_PHANTOM, create("track_phantom_narrow", b -> b.require(Ingredient.of(net.minecraft.world.item.Items.PHANTOM_MEMBRANE))
+            .transitionTo(CRItems.ITEM_INCOMPLETE_TRACK.get(CRTrackMaterials.NARROW_GAUGE_PHANTOM).get())
+            .addOutput(new ItemStack(CRTrackMaterials.NARROW_GAUGE_PHANTOM.getBlock(), 32), 1)
+            .loops(1)
+            .addStep(CuttingRecipe::new, rb -> rb)
+            .addStep(DeployerApplicationRecipe::new, rb -> rb.require(Ingredient.of(net.minecraft.world.item.Items.IRON_INGOT)))
+            .addStep(PressingRecipe::new, rb -> rb)
+        ));
+
         TRACKS.put(CRTrackMaterials.MONORAIL, create("track_monorail", b -> b.require(Ingredient.of(AllBlocks.METAL_GIRDER.get()))
             .transitionTo(CRItems.ITEM_INCOMPLETE_TRACK.get(CRTrackMaterials.MONORAIL).get())
             .addOutput(new ItemStack(CRTrackMaterials.MONORAIL.getBlock(), 6), 1)

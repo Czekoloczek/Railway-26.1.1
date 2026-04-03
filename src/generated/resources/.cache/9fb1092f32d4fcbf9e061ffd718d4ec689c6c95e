@@ -1,4 +1,4 @@
-// 1.21.1	2026-03-29T16:05:37.6706453	Recipes
+// 1.21.1	2026-04-03T14:45:40.7455648	Recipes
 071f8ef0da6675eadaed86c5dd67d6fd6e4139a1 data/railways/advancement/recipes/misc/crafting/big_buffer.json
 e4149c5dd773d7ea34d34f3ba3fc67aa1100f02a data/railways/advancement/recipes/misc/crafting/buffer.json
 c5ae32f86a31f28e0170919921be6dec3a5906bf data/railways/advancement/recipes/misc/crafting/conductor_whistle.json
@@ -1286,6 +1286,8 @@ d5d143c7c5a69609b8397bb3702f4d8a66070b51 data/railways/recipe/sequenced_assembly
 2aa5cbba75e99f2ffcf2ffb6aa611ce77387d248 data/railways/recipe/sequenced_assembly/track_monorail.json
 ae3b009201ebcff3018ca200fab5f4079ced6d87 data/railways/recipe/sequenced_assembly/track_oak.json
 01b138c918101cb837b1100ca55314515a2b23ae data/railways/recipe/sequenced_assembly/track_phantom.json
+68b5d277527356db84d6eee42d63843fb4336272 data/railways/recipe/sequenced_assembly/track_phantom_narrow.json
+514aeaa8a314449af807a748a63d2eb534f8412d data/railways/recipe/sequenced_assembly/track_phantom_wide.json
 b1a0eae64ba9ab7a62cc2f1e6881679ee344a5ed data/railways/recipe/sequenced_assembly/track_spruce.json
 15158374a10d42960e4cdf437ad9b18bd6ae9c4e data/railways/recipe/sequenced_assembly/track_stripped_bamboo.json
 c6da3e1188b486a499c402311f8cc652f11437d7 data/railways/recipe/sequenced_assembly/track_tieless.json
