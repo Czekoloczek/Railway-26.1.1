@@ -70,7 +70,7 @@ public abstract class MixinStationScreen extends AbstractStationScreen {
 
         boolean limitEnabled = station != null && ((ILimited) station).isLimitEnabled();
         int checkboxX = x + 100;
-        int checkboxY = y + 102;
+        int checkboxY = y + 103;
         railways$limitCheckbox = Checkbox.builder(
                 Component.translatable("railways.station.train_limit").withStyle(ChatFormatting.WHITE),
                 Minecraft.getInstance().font)
