@@ -10,7 +10,11 @@
 ## Description
 This repository is an unofficial port of **Create Steam 'n' Rails** for **Neoforge 1.21.1**.
 ### Downloads
-![CurseForge Downloads](https://img.shields.io/curseforge/dt/1414670?label=CurseForge%20Downloads&labelColor=red&color=gray) ![Modrinth Downloads](https://img.shields.io/modrinth/dt/L3Jv0QZI?label=Modrinth%20Downloads&labelColor=%23ebebeb&color=%2300af5c)
+
+<div align="center">
+  
+![CurseForge Downloads](https://img.shields.io/curseforge/dt/1414670?label=CurseForge%20Downloads&labelColor=%23ebebeb&color=%23eb622b) ![Modrinth Downloads](https://img.shields.io/modrinth/dt/L3Jv0QZI?label=Modrinth%20Downloads&labelColor=%23ebebeb&color=%2300af5c)
+</div>
 
 >[!Important]
 > **This port is a substitution for _[Create: Steam 'n' Rails](https://github.com/Layers-of-Railways/Railway)_ since the official team skiped version 1.21.1**.
