@@ -1,0 +1,28 @@
+package com.railwayteam.railways.multiloader.neoforge;
+
+import com.railwayteam.railways.Railways;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+
+/**
+ * Fabric implementation of ClientCommandsImpl.
+ */
+public class ClientCommandsImpl {
+
+    public static void sendSuccess(SharedSuggestionProvider provider, Component text) {
+        if (provider instanceof FabricClientCommandSource fabric) {
+            fabric.sendFeedback(text);
+        } else {
+            Railways.LOGGER.error("Invalid command source: {}", provider);
+        }
+    }
+
+    public static void sendFailure(SharedSuggestionProvider provider, Component text) {
+        if (provider instanceof FabricClientCommandSource fabric) {
+            fabric.sendError(text);
+        } else {
+            Railways.LOGGER.error("Invalid command source: {}", provider);
+        }
+    }
+}

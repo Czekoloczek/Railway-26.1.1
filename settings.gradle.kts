@@ -18,6 +18,7 @@
 
 pluginManagement {
     repositories {
+        maven { url = uri("https://maven.fabricmc.net/") }
         maven { url = uri("https://maven.neoforged.net/releases") }
         gradlePluginPortal()
         mavenCentral()
@@ -29,3 +30,6 @@ plugins {
 }
 
 rootProject.name = "Railway"
+
+// Fabric subproject for MC 26.1.1 + Create Fly
+include("fabric")
