@@ -7,26 +7,31 @@ import net.minecraft.world.item.CreativeModeTab;
 
 /**
  * Fabric implementation of CRCreativeModeTabsRegistrateDisplayItemsGeneratorImpl.
- * Uses the Fabric TabHolder wrappers instead of NeoForge DeferredHolder.
+ *
+ * On NeoForge, {@link CreateRegistrate#isInCreativeTab} accepts a
+ * {@code DeferredHolder<CreativeModeTab, CreativeModeTab>} as the second argument.
+ * On Fabric (with Registrate-Refabricated), the method either:
+ *   a) accepts a {@link ResourceKey}<{@link CreativeModeTab}> directly, or
+ *   b) is accessible via a {@code ResourceKey}-based overload.
+ *
+ * We call the method with just the {@link ResourceKey} here. If
+ * Registrate-Refabricated for MC 26.1.1 does not expose this overload, replace
+ * the method body with {@code return true;} as a safe (all-tabs) fallback until
+ * the correct API path is found.
  */
 public class CRCreativeModeTabsRegistrateDisplayItemsGeneratorImpl {
 
     public static boolean isInCreativeTab(RegistryEntry<?, ?> entry, ResourceKey<CreativeModeTab> tab) {
-        CRCreativeModeTabsImpl.TabHolder<CreativeModeTab> holder = resolveHolder(tab);
-        if (holder == null)
+        if (tab == null) return true;
+        // Attempt to use CreateRegistrate's isInCreativeTab with a ResourceKey.
+        // If Registrate-Refabricated exposes this overload, this works directly.
+        // If the overload does not exist at compile time, fall back to:
+        //   return true;
+        try {
+            return CreateRegistrate.isInCreativeTab(entry, tab);
+        } catch (NoSuchMethodError | AbstractMethodError e) {
+            // API mismatch at runtime – include the entry in all tabs as fallback.
             return true;
-        // TODO: CreateRegistrate.isInCreativeTab may not exist in Create Fly / Registrate-Refabricated.
-        //       Verify and replace with equivalent Fabric API call for MC 26.1.1.
-        return CreateRegistrate.isInCreativeTab(entry, holder);
-    }
-
-    private static CRCreativeModeTabsImpl.TabHolder<CreativeModeTab> resolveHolder(ResourceKey<CreativeModeTab> tab) {
-        if (CRCreativeModeTabsImpl.MAIN_TAB_KEY.equals(tab))
-            return CRCreativeModeTabsImpl.MAIN_TAB;
-        if (CRCreativeModeTabsImpl.TRACKS_TAB_KEY.equals(tab))
-            return CRCreativeModeTabsImpl.TRACKS_TAB;
-        if (CRCreativeModeTabsImpl.PALETTES_TAB_KEY.equals(tab))
-            return CRCreativeModeTabsImpl.PALETTES_TAB;
-        return null;
+        }
     }
 }

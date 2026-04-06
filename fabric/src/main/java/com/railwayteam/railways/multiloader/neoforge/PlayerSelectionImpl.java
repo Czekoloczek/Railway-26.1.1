@@ -2,10 +2,9 @@ package com.railwayteam.railways.multiloader.neoforge;
 
 import com.railwayteam.railways.multiloader.PlayerSelection;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -20,6 +19,11 @@ import java.util.function.Predicate;
 
 /**
  * Fabric implementation of PlayerSelectionImpl using Fabric's PlayerLookup API.
+ *
+ * S2C packets are sent by constructing a {@link ClientboundCustomPayloadPacket}
+ * from our {@link CustomPayloadWrapper} shim and sending it via each player's
+ * connection. This mirrors what the NeoForge version does with
+ * {@code connection.send(packet)}.
  */
 public class PlayerSelectionImpl extends PlayerSelection {
 
@@ -31,9 +35,11 @@ public class PlayerSelectionImpl extends PlayerSelection {
 
     @Override
     public void accept(ResourceLocation id, FriendlyByteBuf buffer) {
-        Packet<?> packet = ServerPlayNetworking.createS2CPacket(id, buffer);
+        // Build the vanilla packet once and deliver it to every player.
+        ClientboundCustomPayloadPacket packet =
+                new ClientboundCustomPayloadPacket(CustomPayloadWrapper.create(id, buffer));
         for (ServerPlayer player : players) {
-            ServerPlayNetworking.getSender(player).sendPacket(packet);
+            player.connection.send(packet);
         }
     }
 

@@ -2,8 +2,7 @@ package com.railwayteam.railways.neoforge;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.railwayteam.railways.Railways;
-import com.railwayteam.railways.config.fabric.CRConfigsFabric;
-import com.railwayteam.railways.multiloader.neoforge.FabricServerHolder;
+import com.railwayteam.railways.registry.neoforge.CRExtraRegistrationImpl;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 
@@ -15,7 +14,7 @@ import java.util.function.BiConsumer;
  */
 public class RailwaysImpl {
 
-    /** Called by Railways.init() – nothing extra needed on Fabric (entrypoint handles it). */
+    /** Called by Railways.init() – triggers Registrate deferred registrations. */
     public static void finalizeRegistrate() {
         Railways.registrate().register();
     }
@@ -27,12 +26,10 @@ public class RailwaysImpl {
     }
 
     /**
-     * Called from ModSetup to handle platform-specific registration.
-     * TODO: Port NeoForge capability registration and other platform-specific
-     *       registration to Fabric equivalents.
+     * Platform-specific registration: wires Create-Registrate callbacks
+     * (vent copycat, signal block source) for Fabric.
      */
     public static void platformBasedRegistration() {
-        // Fabric equivalent registrations go here.
-        // See: neoforge/RailwaysImpl.java#platformBasedRegistration for the NeoForge version.
+        CRExtraRegistrationImpl.platformSpecificRegistration();
     }
 }

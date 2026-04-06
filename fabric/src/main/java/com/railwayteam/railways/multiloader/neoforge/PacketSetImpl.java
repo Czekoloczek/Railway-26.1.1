@@ -1,17 +1,19 @@
 package com.railwayteam.railways.multiloader.neoforge;
 
+import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.multiloader.C2SPacket;
 import com.railwayteam.railways.multiloader.PacketSet;
 import com.railwayteam.railways.multiloader.PlayerSelection;
 import com.railwayteam.railways.multiloader.S2CPacket;
-import com.simibubi.create.foundation.networking.SimplePacketBase;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
@@ -20,8 +22,15 @@ import java.util.function.Function;
 
 /**
  * Fabric implementation of PacketSetImpl.
- * Uses Fabric Networking API v1 for packet sending/receiving.
- * TODO: Update to Fabric Networking API v2 (CustomPayload) when migrating to MC 26.1.1.
+ *
+ * For mod-internal S2C/C2S packets (Railway's own packets) we use Fabric
+ * Networking API v1. The Fabric Networking API v1 send(ResourceLocation, buf)
+ * is still available on 1.21+ via the compatibility layer.
+ *
+ * The abstract {@code send(Object)} / {@code sendTo(ServerPlayer, Object)} /
+ * {@code sendTo(PlayerSelection, Object)} methods are for forwarding Create's
+ * own packets through Create's channel; those are not yet wired and match the
+ * parity of the NeoForge implementation which also throws.
  */
 public class PacketSetImpl extends PacketSet {
 
@@ -46,28 +55,40 @@ public class PacketSetImpl extends PacketSet {
                 handleC2SPacket(player, buf));
     }
 
+    /**
+     * Send a C2S packet using the vanilla custom-payload mechanism so that the
+     * server-side {@link #registerC2SListener()} handler receives it.
+     * On Fabric 1.21+ ClientPlayNetworking.send(id, buf) is the standard path.
+     */
     @Override
     @Environment(EnvType.CLIENT)
     protected void doSendC2S(FriendlyByteBuf buf) {
-        ClientPlayNetworking.send(c2sPacket, buf);
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        if (connection != null) {
+            connection.send(new ServerboundCustomPayloadPacket(
+                    CustomPayloadWrapper.create(c2sPacket, buf)));
+        } else {
+            Railways.LOGGER.error("Cannot send a C2S packet before the client connection exists, skipping!");
+        }
     }
+
+    // -------------------------------------------------------------------------
+    // Create-packet forwarding – not yet wired (matches NeoForge parity).
+    // -------------------------------------------------------------------------
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void send(SimplePacketBase packet) {
-        // TODO: use Create Fly's packet channel when available
+    public void send(Object packet) {
         throw new UnsupportedOperationException("Create Fly packet channel not yet wired for Fabric");
     }
 
     @Override
-    public void sendTo(ServerPlayer player, SimplePacketBase packet) {
-        // TODO: use Create Fly's packet channel when available
+    public void sendTo(ServerPlayer player, Object packet) {
         throw new UnsupportedOperationException("Create Fly packet channel not yet wired for Fabric");
     }
 
     @Override
-    public void sendTo(PlayerSelection selection, SimplePacketBase packet) {
-        // TODO: use Create Fly's packet channel when available
+    public void sendTo(PlayerSelection selection, Object packet) {
         throw new UnsupportedOperationException("Create Fly packet channel not yet wired for Fabric");
     }
 

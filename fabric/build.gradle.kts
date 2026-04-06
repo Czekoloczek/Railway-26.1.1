@@ -171,15 +171,17 @@ dependencies {
     implementation(include("io.github.llamalad7:mixinextras-fabric:${"mixin_extras_version"()}")!!)!!
 
     // Registrate-Refabricated – provides Create-Registrate API surface on Fabric.
-    // TODO: Find or build a version compatible with MC 26.1.1 + Create Fly.
-    //       The common codebase uses Registrate heavily for registration and data-gen.
-    //       Without this dependency (or a full registration rewrite) the build will
-    //       fail at compile time on all files that import com.tterrag.registrate.*.
-    //       Options:
-    //        a) Use "com.tterrag.registrate_fabric:Registrate:MC1.20-1.3.3" if it works
-    //        b) Build Registrate-Refabricated locally targeting MC 26.1.1
-    //        c) Rewrite all registration using vanilla Fabric APIs (multi-month effort)
-    // modImplementation("com.tterrag.registrate_fabric:Registrate:TODO-26.1.1-version")
+    // The common source set uses Registrate heavily for block/item registration and
+    // data generation. Without this dependency the Fabric build will fail to compile
+    // all files that import com.tterrag.registrate.*.
+    //
+    // Options for MC 26.1.1:
+    //   a) If Create Fly bundles Registrate internally, it may be provided transitively.
+    //   b) Build Registrate-Refabricated locally targeting MC 26.1.1.
+    //   c) Use the latest available snapshot: "com.tterrag.registrate_fabric:Registrate:..."
+    //
+    // Uncomment and update the version when a compatible release is confirmed:
+    // modImplementation("com.tterrag.registrate_fabric:Registrate:MC1.21-SNAPSHOT")
 
     // Optional dev tools
     // modLocalRuntime("com.terraformersmc:modmenu:...")
