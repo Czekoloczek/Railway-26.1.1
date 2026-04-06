@@ -7,8 +7,7 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 
 /**
  * Fabric implementation of CRMountedStorageTypesImpl.
- * Uses Registrate-Refabricated to register the MountedFluidStorageType.
- * TODO: Verify that Create Fly exposes mountedFluidStorage() on Fabric for MC 26.1.1.
+ * Uses Registrate (provided transitively by Create Fly) to register the MountedFluidStorageType.
  */
 public class CRMountedStorageTypesImpl {
 

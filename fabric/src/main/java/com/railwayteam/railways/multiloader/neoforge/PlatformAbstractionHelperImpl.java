@@ -1,8 +1,20 @@
 package com.railwayteam.railways.multiloader.neoforge;
 
+import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
-import net.minecraft.world.item.Item;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.world.item.Item;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Fabric implementation of PlatformAbstractionHelperImpl.
@@ -12,28 +24,86 @@ public class PlatformAbstractionHelperImpl {
     /**
      * Returns the fuel burn time for the given item in ticks.
      *
-     * Fabric's {@code FuelRegistryEvents} API changed significantly between
-     * 1.20.x and 1.21.x. As a cross-version safe fallback we read directly from
-     * {@link AbstractFurnaceBlockEntity#getFuel()}, which returns the same data
-     * that the vanilla furnace uses and includes any values registered via the
-     * Fabric fuel extension events.
+     * {@link AbstractFurnaceBlockEntity#getFuel()} returns the same data the
+     * vanilla furnace uses, and includes all values registered via Fabric's
+     * fuel-registration extension events.
      */
     public static int getBurnTime(Item item) {
         return AbstractFurnaceBlockEntity.getFuel().getOrDefault(item, 0);
     }
 
     /**
-     * Returns a Brigadier {@link ArgumentType} for enum values.
+     * Returns a Brigadier {@link ArgumentType} for the given enum class.
      *
-     * NeoForge ships {@code net.neoforged.neoforge.common.util.EnumArgument};
-     * the Porting Lib (used on 1.20.1 Fabric) shipped
-     * {@code io.github.fabricators_of_create.porting_lib.command.EnumArgument}.
-     * For MC 26.1.1 + Create Fly neither is confirmed available. This method
-     * throws until a compatible enum argument type is identified.
+     * <p>The argument type:
+     * <ul>
+     *   <li>parses input case-insensitively against all enum constant names;</li>
+     *   <li>provides tab-completion suggestions from all constant names (lower-case);</li>
+     *   <li>throws a {@link CommandSyntaxException} for unknown values, listing the
+     *       valid options in the error message.</li>
+     * </ul>
      */
     public static <T extends Enum<T>> ArgumentType<T> enumArgument(Class<T> enumClass) {
-        throw new UnsupportedOperationException(
-                "enumArgument not yet implemented for Fabric 26.1.1 – "
-                + "provide a compatible ArgumentType<" + enumClass.getSimpleName() + ">");
+        return new EnumArgumentType<>(enumClass);
+    }
+
+    // -----------------------------------------------------------------------
+    // Inner implementation
+    // -----------------------------------------------------------------------
+
+    private static final class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
+
+        private static final DynamicCommandExceptionType ERROR_INVALID_VALUE =
+                new DynamicCommandExceptionType(msg -> Component.literal(String.valueOf(msg)));
+
+        private final Class<T> enumClass;
+        private final T[] constants;
+
+        EnumArgumentType(Class<T> enumClass) {
+            this.enumClass = enumClass;
+            this.constants = enumClass.getEnumConstants();
+        }
+
+        @Override
+        public T parse(StringReader reader) throws CommandSyntaxException {
+            String input = reader.readString();
+            // Try exact match first, then case-insensitive.
+            for (T constant : constants) {
+                if (constant.name().equalsIgnoreCase(input)) {
+                    return constant;
+                }
+            }
+            String valid = buildValidList();
+            throw ERROR_INVALID_VALUE.createWithContext(reader,
+                    "Unknown " + enumClass.getSimpleName() + " value '" + input
+                    + "'. Valid values: " + valid);
+        }
+
+        @Override
+        public <S> CompletableFuture<Suggestions> listSuggestions(
+                CommandContext<S> context, SuggestionsBuilder builder) {
+            String remaining = builder.getRemainingLowerCase();
+            for (T constant : constants) {
+                String name = constant.name().toLowerCase(Locale.ROOT);
+                if (name.startsWith(remaining)) {
+                    builder.suggest(name);
+                }
+            }
+            return builder.buildFuture();
+        }
+
+        @Override
+        public Collection<String> getExamples() {
+            return Arrays.stream(constants)
+                    .limit(3)
+                    .map(c -> c.name().toLowerCase(Locale.ROOT))
+                    .toList();
+        }
+
+        private String buildValidList() {
+            return String.join(", ", Arrays.stream(constants)
+                    .map(c -> c.name().toLowerCase(Locale.ROOT))
+                    .toList());
+        }
     }
 }

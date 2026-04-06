@@ -8,11 +8,8 @@ import com.tterrag.registrate.util.entry.BlockEntityEntry;
 /**
  * Fabric implementation of CRBlockEntitiesImpl.
  *
- * Uses Registrate-Refabricated (same API as NeoForge Registrate) for block entity
- * registration. Requires registrate-refabricated on the Fabric classpath.
- *
- * TODO: If registrate-refabricated is not available for MC 26.1.1, rewrite
- *       using vanilla Fabric registry APIs (Registry.register + Fabric BE API).
+ * Uses Registrate (provided transitively by Create Fly) for block entity registration.
+ * Renderers are registered separately in the Fabric client entrypoint.
  */
 public class CRBlockEntitiesImpl {
 
@@ -20,14 +17,12 @@ public class CRBlockEntitiesImpl {
             Railways.registrate()
                     .blockEntity("fuel_tank", FuelTankBlockEntity::new)
                     .validBlocks(CRBlocksImpl.FUEL_TANK)
-                    // TODO: register renderer via Fabric API client entrypoint
                     .register();
 
     public static final BlockEntityEntry<PortableFuelInterfaceBlockEntity> PORTABLE_FUEL_INTERFACE =
             Railways.registrate()
                     .blockEntity("portable_fuel_interface", PortableFuelInterfaceBlockEntity::new)
                     .validBlocks(CRBlocksImpl.PORTABLE_FUEL_INTERFACE)
-                    // TODO: register renderer via Fabric API client entrypoint
                     .register();
 
     public static void init() {

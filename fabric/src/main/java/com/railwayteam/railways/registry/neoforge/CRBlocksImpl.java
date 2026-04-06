@@ -25,9 +25,9 @@ import static com.simibubi.create.foundation.data.TagGen.pickaxeOnly;
 /**
  * Fabric implementation of CRBlocksImpl.
  *
- * Uses Registrate-Refabricated for block registration.
- * TODO: Verify Create Fly compatibility with Registrate-Refabricated for MC 26.1.1.
- * TODO: Add FuelTankBlockStateGenerator and blockstate generation for Fabric.
+ * Uses Registrate (provided transitively by Create Fly) for block registration.
+ * FuelTankBlockStateGenerator is omitted; blockstate JSON lives under
+ * src/main/resources/assets/railways/blockstates/ instead.
  */
 public class CRBlocksImpl {
 
@@ -40,8 +40,6 @@ public class CRBlocksImpl {
             .properties(BlockBehaviour.Properties::noOcclusion)
             .properties(p -> p.isRedstoneConductor((p1, p2, p3) -> true))
             .transform(pickaxeOnly())
-            // TODO: Re-enable blockstate generation when Fabric data-gen is set up
-            // .blockstate(new FuelTankGenerator()::generate)
             .onRegister(CreateRegistrate.blockModel(() -> FuelTankModel::standard))
             .transform(MountedFluidStorageType.mountedFluidStorage(CRMountedStorageTypesImpl.FUEL_TANK))
             .onRegister(MovementBehaviour.movementBehaviour(new FuelTankMovementBehavior()))

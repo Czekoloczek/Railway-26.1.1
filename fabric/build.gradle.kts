@@ -130,6 +130,11 @@ loom {
 // Dependencies
 // -------------------------------------------------------------------------
 repositories {
+    // Local Maven – resolves the locally-compiled Create Fly artifact (and Registrate
+    // which Create Fly bundles transitively). Run:
+    //   ./gradlew :publishToMavenLocal  (inside your Create Fly clone)
+    // before building this project.
+    mavenLocal()
     maven("https://maven.fabricmc.net/")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
@@ -138,11 +143,12 @@ repositories {
     maven("https://maven.maxhenkel.de/repository/public") { name = "Simple Voice Chat" }
     maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
     maven("https://maven.createmod.net") { name = "CreateMod" }
-    // Registrate-Refabricated (needed for block/item registration ported from NeoForge)
-    // TODO: Verify whether registrate-refabricated is available for MC 26.1.1.
-    //       If Create Fly bundles Registrate internally, this explicit dep may not be required.
+    // Registrate-Refabricated fallback repos (provided transitively by Create Fly;
+    // these are only consulted if Create Fly does not include Registrate itself).
     maven("https://mvn.devos.one/snapshots/") { name = "devos snapshots (Registrate)" }
     maven("https://maven.tterrag.com/") { name = "tterrag (Registrate)" }
+    // NightConfig / electronwill – provides TOML/JSON config file support.
+    // Bundled by Create Fly; declaring mavenCentral here as a fallback.
     mavenCentral()
 }
 
@@ -162,29 +168,21 @@ dependencies {
     // TODO: verify exact version at https://fabricmc.net/develop/
     modImplementation("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
 
-    // Create Fly – the Fabric port of Create targeting MC 26.1.1
-    // TODO: verify exact artifact coordinates at https://modrinth.com/mod/create-fly
+    // Create Fly – the Fabric port of Create targeting MC 26.1.1.
+    // Resolved from mavenLocal() after a local build of Create Fly.
+    // Create Fly bundles Registrate-Refabricated and NightConfig transitively,
+    // so no separate Registrate or nightconfig dependency is needed.
     modImplementation("maven.modrinth:create-fly:${"create_fly_version"()}")
 
     // MixinExtras (common + fabric include)
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${"mixin_extras_version"()}")!!)!!
     implementation(include("io.github.llamalad7:mixinextras-fabric:${"mixin_extras_version"()}")!!)!!
 
-    // Registrate-Refabricated – provides Create-Registrate API surface on Fabric.
-    // The common source set uses Registrate heavily for block/item registration and
-    // data generation. Without this dependency the Fabric build will fail to compile
-    // all files that import com.tterrag.registrate.*.
-    //
-    // Options for MC 26.1.1:
-    //   a) If Create Fly bundles Registrate internally, it may be provided transitively.
-    //   b) Build Registrate-Refabricated locally targeting MC 26.1.1.
-    //   c) Use the latest available snapshot: "com.tterrag.registrate_fabric:Registrate:..."
-    //
-    // Uncomment and update the version when a compatible release is confirmed:
-    // modImplementation("com.tterrag.registrate_fabric:Registrate:MC1.21-SNAPSHOT")
-
-    // Optional dev tools
-    // modLocalRuntime("com.terraformersmc:modmenu:...")
+    // NightConfig – TOML/JSON config file support, used by our TOML-backed ModConfigSpec.
+    // Provided transitively by Create Fly; declared explicitly as a fallback to ensure
+    // it is always on the compile classpath even before Create Fly resolves.
+    implementation("com.electronwill.night-config:toml:3.6.7")
+    implementation("com.electronwill.night-config:core:3.6.7")
 }
 
 // -------------------------------------------------------------------------

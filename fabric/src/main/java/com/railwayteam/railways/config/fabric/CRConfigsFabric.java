@@ -1,26 +1,48 @@
 package com.railwayteam.railways.config.fabric;
 
+import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.config.CRConfigs;
+import net.createmod.catnip.config.ConfigBase;
+import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+
+import java.nio.file.Path;
 
 /**
- * Fabric-specific config registration.
+ * Fabric config registration.
  *
- * On NeoForge, config registration is handled by CRConfigsImpl (via ModLoadingContext).
- * On Fabric, we have two options:
- *   a) Use Forge Config API Port (if available for MC 26.1.1) – provides NeoForge config
- *      compatibility layer on Fabric, allowing CRConfigs to work unchanged.
- *   b) Use Cloth Config API – requires rewriting config spec creation.
+ * Calls {@link CRConfigs#registerCommon()} to create the config specs, then
+ * loads each spec's TOML backing file from the Fabric config directory.
+ * This gives the same persistent-config behaviour as Forge Config API Port
+ * without requiring an external dependency.
  *
- * This stub calls CRConfigs.registerCommon() which creates the config specs.
- * The specs use the NeoForge shim ModConfigSpec which returns default values only.
- *
- * TODO: Integrate with Forge Config API Port or Cloth Config for persistent config on Fabric.
- * TODO: Check https://modrinth.com/mod/forge-config-api-port for a MC 26.1.1 compatible version.
+ * Config files are written to:
+ *   <config-dir>/railways-client.toml
+ *   <config-dir>/railways-common.toml
+ *   <config-dir>/railways-server.toml
  */
 public class CRConfigsFabric {
 
     public static void register() {
-        // Initialize config specs (will use default values since no real NeoForge backing)
         CRConfigs.registerCommon();
+        loadAllConfigs();
+    }
+
+    private static void loadAllConfigs() {
+        Path configDir = FabricLoader.getInstance().getConfigDir();
+        loadConfig(ModConfig.Type.CLIENT, configDir.resolve(Railways.MOD_ID + "-client.toml"));
+        loadConfig(ModConfig.Type.COMMON, configDir.resolve(Railways.MOD_ID + "-common.toml"));
+        loadConfig(ModConfig.Type.SERVER, configDir.resolve(Railways.MOD_ID + "-server.toml"));
+    }
+
+    private static void loadConfig(ModConfig.Type type, Path file) {
+        ConfigBase config = CRConfigs.CONFIGS.get(type);
+        if (config == null) return;
+        if (!(config.specification instanceof ModConfigSpec spec)) return;
+
+        spec.loadFromFile(file);
+        config.onLoad();
+        Railways.LOGGER.debug("[Config] Loaded {} config from {}", type.name().toLowerCase(), file);
     }
 }
