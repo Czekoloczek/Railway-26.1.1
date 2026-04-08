@@ -130,11 +130,6 @@ loom {
 // Dependencies
 // -------------------------------------------------------------------------
 repositories {
-    // Local Maven – resolves the locally-compiled Create Fly artifact (and Registrate
-    // which Create Fly bundles transitively). Run:
-    //   ./gradlew :publishToMavenLocal  (inside your Create Fly clone)
-    // before building this project.
-    mavenLocal()
     maven("https://maven.fabricmc.net/")
     maven("https://maven.shedaniel.me/")
     maven("https://maven.terraformersmc.com/releases/")
@@ -169,7 +164,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${"fabric_api_version"()}")
 
     // Create Fly – the Fabric port of Create targeting MC 26.1.1.
-    // Resolved from mavenLocal() after a local build of Create Fly.
+    // Resolved from the Modrinth Maven repository.
     // Create Fly bundles Registrate-Refabricated and NightConfig transitively,
     // so no separate Registrate or nightconfig dependency is needed.
     modImplementation("maven.modrinth:create-fly:${"create_fly_version"()}")
