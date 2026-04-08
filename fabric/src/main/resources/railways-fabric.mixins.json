@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "com.railwayteam.railways.neoforge.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "refmap": "Steam_Rails-fabric-refmap.json",
   "client": [],
   "mixins": [

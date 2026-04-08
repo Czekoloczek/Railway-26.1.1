@@ -21,7 +21,7 @@
 
 plugins {
     java
-    id("fabric-loom") version "1.10-SNAPSHOT"
+    id("fabric-loom") version "1.15-SNAPSHOT"
 }
 
 // -------------------------------------------------------------------------
@@ -90,7 +90,7 @@ group = "maven_group"()
 version = "${"mod_version"()}+fabric-mc${"fabric_mc_version"()}"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
     withSourcesJar()
 }
 
