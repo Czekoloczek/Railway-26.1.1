@@ -31,5 +31,9 @@ plugins {
 
 rootProject.name = "Railway"
 
-// Fabric subproject for MC 26.1.1 + Create Fly
-include("fabric")
+// Fabric subproject for MC 26.1.1 + Create Fly — only included when INCLUDE_FABRIC=true or -PincludeFabric=true
+val includeFabric = System.getenv("INCLUDE_FABRIC") == "true" ||
+    providers.gradleProperty("includeFabric").orNull == "true"
+if (includeFabric) {
+    include("fabric")
+}
