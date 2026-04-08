@@ -31,5 +31,4 @@ plugins {
 
 rootProject.name = "Railway"
 
-// Fabric subproject for MC 26.1.1 + Create Fly
-include("fabric")
+// NeoForge-only build; fabric subproject is not included
