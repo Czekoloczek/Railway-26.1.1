@@ -23,9 +23,12 @@ import com.railwayteam.railways.Railways;
 import com.railwayteam.railways.RailwaysClient;
 import com.railwayteam.railways.config.CRConfigs;
 import com.railwayteam.railways.content.conductor.ConductorCapHumanoidLayer;
+import com.railwayteam.railways.content.conductor.ConductorCapItem;
+import com.railwayteam.railways.content.conductor.ConductorCapModel;
 import com.railwayteam.railways.content.conductor.ConductorRenderer;
 import com.railwayteam.railways.content.fuel.psi.PortableFuelInterfaceBlockEntity;
 import com.railwayteam.railways.content.fuel.tank.FuelTankRenderer;
+import com.railwayteam.railways.content.palettes.boiler.BoilerBlock;
 import com.railwayteam.railways.content.smokestack.block.renderer.DieselSmokeStackRenderer;
 import com.railwayteam.railways.content.semaphore.SemaphoreRenderer;
 import com.railwayteam.railways.content.switches.TrackSwitchRenderer;
@@ -34,6 +37,7 @@ import com.railwayteam.railways.neoforge.client.track.FullShapeDestroyEffects;
 import com.railwayteam.railways.registry.CRBlockEntities;
 import com.railwayteam.railways.registry.CRBlockPartials;
 import com.railwayteam.railways.registry.CRBlocks;
+import com.railwayteam.railways.registry.CRItems;
 import com.railwayteam.railways.registry.CRParticleTypes;
 import com.railwayteam.railways.registry.CREntities;
 import com.railwayteam.railways.registry.neoforge.CRBlockEntitiesImpl;
@@ -42,8 +46,11 @@ import com.simibubi.create.content.decoration.copycat.CopycatBlock;
 import com.simibubi.create.content.trains.bogey.BogeyBlockEntityRenderer;
 import com.simibubi.create.content.trains.bogey.BogeyBlockEntityVisual;
 import com.simibubi.create.content.trains.track.TrackBlock;
+import com.simibubi.create.foundation.block.render.ReducedDestroyEffects;
 import dev.engine_room.flywheel.api.visualization.VisualizerRegistry;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -61,12 +68,17 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
@@ -146,6 +158,35 @@ public class RailwaysClientImpl {
 		});
 		if (!blocks.isEmpty()) {
 			event.registerBlock(FullShapeDestroyEffects.INSTANCE, blocks.toArray(Block[]::new));
+		}
+
+		List<Block> boilerBlocks = new ArrayList<>();
+		BuiltInRegistries.BLOCK.entrySet().forEach(entry -> {
+			var id = entry.getKey().location();
+			Block block = entry.getValue();
+			if (Railways.MOD_ID.equals(id.getNamespace()) && block instanceof BoilerBlock) {
+				boilerBlocks.add(block);
+			}
+		});
+		if (!boilerBlocks.isEmpty()) {
+			event.registerBlock(new ReducedDestroyEffects(), boilerBlocks.toArray(Block[]::new));
+		}
+
+		Item[] conductorCapItems = CRItems.ITEM_CONDUCTOR_CAP.values().stream()
+				.map(e -> (Item) e.get())
+				.toArray(Item[]::new);
+		if (conductorCapItems.length > 0) {
+			event.registerItem(new IClientItemExtensions() {
+				@Override
+				public Model getGenericArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> _default) {
+					return ConductorCapModel.of(itemStack, _default, entityLiving);
+				}
+
+				@Override
+				public int getArmorLayerTintColor(ItemStack stack, LivingEntity entity, net.minecraft.world.item.ArmorMaterial.Layer layer, int layerIdx, int fallbackColor) {
+					return (stack.getItem() instanceof ConductorCapItem) ? 0x00000000 : fallbackColor;
+				}
+			}, conductorCapItems);
 		}
 	}
 

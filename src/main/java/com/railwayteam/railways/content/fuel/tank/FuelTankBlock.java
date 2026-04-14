@@ -185,7 +185,7 @@ public class FuelTankBlock extends Block implements IWrenchable, IBE<FuelTankBlo
             world.playSound(null, pos, soundevent, SoundSource.BLOCKS, .5f, pitch);
         }
 
-        if (!fluidInTank.isFluidStackIdentical(prevFluidInTank)) {
+        if (!FluidStack.matches(fluidInTank, prevFluidInTank)) {
             if (be instanceof FuelTankBlockEntity) {
                 FuelTankBlockEntity controllerBE = ((FuelTankBlockEntity) be).getControllerBE();
                 if (controllerBE != null) {

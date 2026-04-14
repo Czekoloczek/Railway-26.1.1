@@ -17,8 +17,7 @@
     "FluidNetworkMixin",
     "RollingModeMixin",
     "ServerGamePacketListenerImplMixin",
-    "TrainMixin",
-    "self.BoilerBlockMixin"
+    "TrainMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

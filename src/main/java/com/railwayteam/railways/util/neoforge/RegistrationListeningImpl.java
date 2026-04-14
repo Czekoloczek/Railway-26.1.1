@@ -22,13 +22,12 @@ import com.railwayteam.railways.util.RegistrationListening.Listener;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@EventBusSubscriber(bus = Bus.MOD)
+@EventBusSubscriber
 public class RegistrationListeningImpl {
 	private static final Set<Listener<?>> listeners = new HashSet<>();
 

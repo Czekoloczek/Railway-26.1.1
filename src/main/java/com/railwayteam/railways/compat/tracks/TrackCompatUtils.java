@@ -88,6 +88,7 @@ public abstract class TrackCompatUtils {
         return makeTrack(material, blockstateGen, (t) -> {}, collectProperties);
     }
 
+    @SuppressWarnings("removal")
     public static BlockEntry<TrackBlock> makeTrack(TrackMaterial material, NonNullBiConsumer<DataGenContext<Block, TrackBlock>, RegistrateBlockstateProvider> blockstateGen, NonNullConsumer<? super TrackBlock> onRegister, Function<BlockBehaviour.Properties, BlockBehaviour.Properties> collectProperties) {
         String owningMod = material.id.getNamespace();
         String name = "track_" + owningMod + "_" + material.resourceName();

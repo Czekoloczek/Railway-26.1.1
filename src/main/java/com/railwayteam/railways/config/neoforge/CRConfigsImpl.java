@@ -28,7 +28,7 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 
 import java.util.Map;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class CRConfigsImpl {
     public static void register(ModContainer container) {
         CRConfigs.registerCommon();

@@ -63,7 +63,7 @@ public class ClientEventsForge {
 			ClientEvents.onTagsUpdated();
 	}
 
-	@EventBusSubscriber(value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+	@EventBusSubscriber(value = Dist.CLIENT)
 	public static class ModBusEvents {
 		@SubscribeEvent
 		public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {

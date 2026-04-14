@@ -21,7 +21,6 @@ package com.railwayteam.railways.content.smokestack.block;
 import com.railwayteam.railways.content.smokestack.SmokestackStyle;
 import com.railwayteam.railways.registry.CRBlocks;
 import com.railwayteam.railways.util.ShapeWrapper;
-import com.simibubi.create.AllTags;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
@@ -29,6 +28,8 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -128,7 +129,7 @@ public abstract class AbstractSmokeStackBlock<T extends SmartBlockEntity> extend
     @Override
         protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand,
                                          BlockHitResult pHit) {
-          if (pPlayer.getItemInHand(pHand).is(AllTags.commonItemTag("tools/wrench"))) {
+          if (pPlayer.getItemInHand(pHand).is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "tools/wrench")))) {
               return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         pState = pState.cycle(ENABLED);

@@ -154,6 +154,7 @@ public class CRBlocks {
         }, collectProperties);
     }
 
+    @SuppressWarnings("removal")
     private static BlockEntry<TrackBlock> makeTrack(TrackMaterial material, NonNullBiConsumer<DataGenContext<Block, TrackBlock>, RegistrateBlockstateProvider> blockstateGen, NonNullConsumer<? super TrackBlock> onRegister, Function<BlockBehaviour.Properties, BlockBehaviour.Properties> collectProperties) {
         List<TagKey<Block>> trackTags = new ArrayList<>();
         trackTags.add(AllTags.AllBlockTags.TRACKS.tag);
@@ -216,6 +217,7 @@ public class CRBlocks {
 
     public static final HashMap<String, BlockStateBlockItemGroup<Couple<String>, SmokestackStyle>> SMOKESTACK_GROUP = new HashMap<>();
 
+    @SuppressWarnings("removal")
     private static BlockEntry<SmokeStackBlock> makeSmokeStack(String variant, SmokeStackBlock.SmokeStackType type, String description, ShapeWrapper shape, boolean spawnExtraSmoke, boolean emitStationarySmoke, NonNullBiConsumer<DataGenContext<Block, SmokeStackBlock>, RegistrateBlockstateProvider> blockStateProvider, SmokeStackFunction<SmokeStackBlock> blockFunction) {
         TagKey<Item> cycleTag = SmokestackStyle.variantToTagKey(variant);
         BlockEntry<SmokeStackBlock> BLOCK = REGISTRATE.block("smokestack_" + variant, p -> blockFunction.create(p, type, shape, emitStationarySmoke, variant))
@@ -250,6 +252,7 @@ public class CRBlocks {
         return BLOCK;
     }
 
+    @SuppressWarnings("removal")
     public static final BlockEntry<SemaphoreBlock> SEMAPHORE = REGISTRATE.block("semaphore", SemaphoreBlock::new)
         .initialProperties(SharedProperties::softMetal)
         .transform(BuilderTransformers.semaphore())
@@ -585,6 +588,7 @@ public class CRBlocks {
         STREAMLINED_STACK = makeSmokeStack("streamlined", new SmokeStackBlock.SmokeStackType(new Vec3(0.5, 0.3, 0.5), new Vec3(0.25, 0.2, 0.25)), "Streamlined Smokestack", RotationType.FACING, ShapeWrapper.wrapped(CRShapes.STREAMLINED_STACK), true, true),
         WOODBURNER_STACK = makeSmokeStack("woodburner", new SmokeStackBlock.SmokeStackType(0.5, 0.4, 0.5), "Woodburner Smokestack", CRShapes.WOOD_STACK, true);
 
+    @SuppressWarnings("removal")
     public static final BlockEntry<DieselSmokeStackBlock> DIESEL_STACK = REGISTRATE.block("smokestack_diesel", p -> new DieselSmokeStackBlock(p, ShapeWrapper.wrapped(CRShapes.DIESEL_STACK)))
         .initialProperties(SharedProperties::softMetal)
         .transform(BuilderTransformers.dieselSmokeStack())
@@ -754,6 +758,7 @@ public class CRBlocks {
         = new BlockStateBlockItemGroup<>(true, CopycatHeadstockBlock.STYLE, HeadstockStyle.values(), COPYCAT_HEADSTOCK,
         BuilderTransformers.copycatHeadstockItem(), CRTags.AllItemTags.COPYCAT_HEADSTOCKS.tag, "block.railways.headstock");
 
+    @SuppressWarnings("removal")
     public static final BlockEntry<GenericCrossingBlock> GENERIC_CROSSING =
         REGISTRATE.block("generic_crossing", GenericCrossingBlock::new)
             .transform(BuilderTransformers.genericCrossing())
